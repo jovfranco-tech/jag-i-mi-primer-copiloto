@@ -634,7 +634,10 @@
 
             <!-- Panel de Entrada de Texto -->
             <div class="chat-input-bar">
-              <input type="text" id="chat-user-input" class="chat-input" placeholder="Pregúntale algo a Jagüi..." onkeydown="handleChatKeydown(event)">
+              <button class="btn-3d btn-secondary btn-chat-mic" id="btn-chat-mic" onclick="toggleVoiceRecognition()" title="Hablar con Jagüi" style="padding: 0.8rem 1rem;">
+                <span>🎙️</span>
+              </button>
+              <input type="text" id="chat-user-input" class="chat-input" placeholder="Pregúntale algo a Jagüi o pulsa el micro..." onkeydown="handleChatKeydown(event)">
               <button class="btn-3d btn-primary btn-chat-send" onclick="sendChatMessage()">
                 <span>Enviar 🚀</span>
               </button>

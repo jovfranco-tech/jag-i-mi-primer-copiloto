@@ -986,17 +986,11 @@ const LESSONS_DATA = {
         failDesc: "¡Nop! El mejor camino es la colaboración: los humanos aportamos corazón, ética y creatividad; la IA aporta velocidad y datos."
       },
       {
-        type: "boolean",
-        question: "¿Estás listo para usar tu conocimiento de IA para crear cosas geniales y ayudar al mundo como un verdadero científico?",
-        options: [
-          { text: "¡Sí, estoy listo para rugir con la IA! 🐆⚡", value: true },
-          { text: "No, prefiero dejarle todo a las máquinas", value: false }
-        ],
-        correctValue: true,
-        hint: "¡JagÜi cree en ti!",
-        speech: "¡Científico/a! ¿Estás listo para cambiar el futuro?",
-        successDesc: "¡Raaaawr! ¡Felicidades, Maestro de la Inteligencia Artificial! JagÜi está súper orgulloso de ti. ¡Has completado los 30 niveles!",
-        failDesc: "¡Ánimo! El futuro necesita de tu creatividad humana. ¡Tú eres el verdadero jefe de la tecnología!"
+        type: "ai_open",
+        question: "¡Desafío AI Native! Explícale a Jagüi con tus propias palabras: ¿Por qué crees que es muy importante que los humanos usemos la Inteligencia Artificial de forma ética y para ayudar al planeta? 🌍",
+        speech: "¡Científico/a! Llegamos al final del viaje de 30 niveles. Háblame de corazón: ¿Por qué crees que debemos usar la Inteligencia Artificial para el bien del planeta?",
+        successDesc: "¡Soberbio rugido de sabiduría! Tu respuesta es ética, humana y demuestra que estás 100% listo para cambiar el futuro. ¡Felicidades, Maestro de la IA! 🐆🎓",
+        failDesc: "¡Casi! Cuéntame un poco más sobre cómo ayudar al planeta o a las personas para que tu respuesta sea súper brillante."
       }
     ]
   }
@@ -1309,7 +1303,134 @@ function toggleMusic() {
   }
 }
 
-// --- INTELEGENCIA ARTIFICIAL NATIVA (GEMINI API CHATBOT) ---
+// --- INTELIGENCIA ARTIFICIAL NATIVA (GEMINI API CHATBOT & DICTADO POR VOZ) ---
+let recognitionInstance = null;
+let isRecognitionActive = false;
+
+function toggleVoiceRecognition() {
+  const btn = document.getElementById('btn-chat-mic');
+  const input = document.getElementById('chat-user-input');
+  
+  if (isRecognitionActive) {
+    if (recognitionInstance) {
+      recognitionInstance.stop();
+    }
+    return;
+  }
+  
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    speakText("¡Uy! Tu navegador no soporta dictado por voz. ¡Prueba en Google Chrome!");
+    return;
+  }
+  
+  try {
+    recognitionInstance = new SpeechRecognition();
+    recognitionInstance.lang = 'es-MX';
+    recognitionInstance.interimResults = false;
+    recognitionInstance.maxAlternatives = 1;
+    
+    recognitionInstance.onstart = () => {
+      isRecognitionActive = true;
+      if (btn) {
+        btn.classList.add('btn-equipped');
+        btn.innerHTML = '<span>🔴 Rec</span>';
+        btn.style.animation = 'float 1s infinite ease-in-out';
+      }
+      playAudioSynth('click');
+    };
+    
+    recognitionInstance.onend = () => {
+      isRecognitionActive = false;
+      if (btn) {
+        btn.classList.remove('btn-equipped');
+        btn.innerHTML = '<span>🎙️</span>';
+        btn.style.animation = '';
+      }
+    };
+    
+    recognitionInstance.onresult = (event) => {
+      const transcript = event.results[0][0].transcript;
+      if (input) {
+        input.value = transcript;
+        sendChatMessage(); // Enviar automáticamente
+      }
+    };
+    
+    recognitionInstance.onerror = (err) => {
+      console.warn("Speech recognition error:", err);
+      playAudioSynth('incorrect');
+    };
+    
+    recognitionInstance.start();
+  } catch (e) {
+    console.error("Speech recognition failed to start:", e);
+  }
+}
+
+// Dictado por voz interactivo en los Quizzes
+let quizRecognitionInstance = null;
+let isQuizRecognitionActive = false;
+
+function toggleQuizSpeechRecognition() {
+  const btn = document.getElementById('btn-ai-open-mic');
+  const input = document.getElementById('ai-open-input');
+  
+  if (isQuizRecognitionActive) {
+    if (quizRecognitionInstance) {
+      quizRecognitionInstance.stop();
+    }
+    return;
+  }
+  
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    speakText("¡Uy! Tu navegador no soporta dictado por voz. ¡Prueba en Google Chrome!");
+    return;
+  }
+  
+  try {
+    quizRecognitionInstance = new SpeechRecognition();
+    quizRecognitionInstance.lang = 'es-MX';
+    quizRecognitionInstance.interimResults = false;
+    quizRecognitionInstance.maxAlternatives = 1;
+    
+    quizRecognitionInstance.onstart = () => {
+      isQuizRecognitionActive = true;
+      if (btn) {
+        btn.classList.add('btn-equipped');
+        btn.innerHTML = '<span>🔴 Recibiendo voz...</span>';
+      }
+      playAudioSynth('click');
+    };
+    
+    quizRecognitionInstance.onend = () => {
+      isQuizRecognitionActive = false;
+      if (btn) {
+        btn.classList.remove('btn-equipped');
+        btn.innerHTML = '<span>🎙️ Dictar por Voz</span>';
+      }
+    };
+    
+    quizRecognitionInstance.onresult = (event) => {
+      const transcript = event.results[0][0].transcript;
+      if (input) {
+        input.value = transcript;
+        playAudioSynth('correct');
+      }
+    };
+    
+    quizRecognitionInstance.onerror = (err) => {
+      console.warn("Quiz Speech recognition error:", err);
+      playAudioSynth('incorrect');
+    };
+    
+    quizRecognitionInstance.start();
+  } catch (e) {
+    console.error("Quiz Speech recognition failed to start:", e);
+  }
+}
+
 function saveGeminiApiKey() {
   const key = document.getElementById('gemini-api-key-input').value.trim();
   const status = document.getElementById('api-key-status');
@@ -1318,7 +1439,7 @@ function saveGeminiApiKey() {
     if (status) status.innerText = "¡API Key conectada con éxito! 🚀";
   } else {
     localStorage.removeItem('gemini_api_key');
-    if (status) status.innerText = "Usando simulador local 🐆";
+    if (status) status.innerText = "Usando API Key por defecto de la Suite 🐆";
   }
 }
 
@@ -1343,7 +1464,8 @@ function sendChatMessage() {
   setMascotExpression('jagui-welcome', 'thinking');
   appendChatMessage("Jagüi", "Mmm... ¡Déjame pensarlo! Raaaawr... 🧠⚡", "jagui-msg", true);
   
-  const apiKey = localStorage.getItem('gemini_api_key');
+  const defaultApiKey = "AIzaSyCpbAxrs6y89rF5NvFTJ7CYUASi8Jr1ACI";
+  const apiKey = localStorage.getItem('gemini_api_key') || defaultApiKey;
   
   if (apiKey) {
     callGeminiAPI(text, apiKey);
@@ -1543,9 +1665,24 @@ function speakText(text) {
     window.speechSynthesis.cancel(); // Detener cualquier voz previa
     
     currentUtterance = new SpeechSynthesisUtterance(text);
+    
+    // Buscar voces premium neuronales generadas por la IA de Google en el navegador
+    const voices = window.speechSynthesis.getVoices();
+    let selectedVoice = voices.find(v => v.name.includes('Google') && v.lang.startsWith('es'));
+    if (!selectedVoice) {
+      selectedVoice = voices.find(v => v.lang.startsWith('es-MX') || v.lang.startsWith('es-US'));
+    }
+    if (!selectedVoice) {
+      selectedVoice = voices.find(v => v.lang.startsWith('es'));
+    }
+    
+    if (selectedVoice) {
+      currentUtterance.voice = selectedVoice;
+    }
+    
     currentUtterance.lang = 'es-MX'; // Idioma preferido (Español Latinoamericano)
-    currentUtterance.rate = 1.05;  // Velocidad de voz natural
-    currentUtterance.pitch = 1.15; // Tono ligeramente más agudo para que JagÜi suene infantil/carismático
+    currentUtterance.rate = 1.08;  // Velocidad de voz alegre y fluida
+    currentUtterance.pitch = 1.25; // Tono juguetón infantil idóneo para Jagüi
     
     window.speechSynthesis.speak(currentUtterance);
   } catch (e) {
@@ -2271,6 +2408,22 @@ function renderQuestion() {
     area.innerHTML = html;
     initReinforcementGame();
   }
+  
+  else if (question.type === 'ai_open') {
+    let html = `
+      <div class="minigame-container" style="width: 100%;">
+        <div class="ai-open-panel" style="width: 100%; display: flex; flex-direction: column; gap: 1rem;">
+          <textarea id="ai-open-input" class="chat-input" rows="4" placeholder="Escribe tu respuesta aquí o pulsa el micro para dictársela a Jagüi..." style="width: 100%; box-sizing: border-box; resize: none;"></textarea>
+          <div style="display: flex; gap: 1rem; justify-content: center;">
+            <button class="btn-3d btn-secondary" id="btn-ai-open-mic" onclick="toggleQuizSpeechRecognition()" style="padding: 0.8rem 1.5rem;">
+              <span>🎙️ Dictar por Voz</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+    area.innerHTML = html;
+  }
 }
 
 function selectChoiceOption(idx) {
@@ -2769,6 +2922,68 @@ function handleQuizAction() {
         speakText("¡Sigue entrenándome con galletas hasta que mi confianza llegue al 100%! 🍪🎮");
         return;
       }
+    } else if (question.type === 'ai_open') {
+      const inputVal = document.getElementById('ai-open-input').value.trim();
+      if (!inputVal) {
+        speakText("¡Oye! Escribe o díctame tu respuesta en el cuadro primero. 📝");
+        return;
+      }
+      
+      // --- FLUJO ASÍNCRONO DE IA NATIVA (EVALUACIÓN SEMÁNTICA CON GEMINI) ---
+      appState.isChecking = true;
+      setMascotExpression('jagui-instructor', 'thinking');
+      document.getElementById('instructor-bubble').innerHTML = "¡Dejame analizar semánticamente tu respuesta con mi cerebro de IA en la nube! Raaaawr... 📡🧠";
+      speakText("Dejame analizar tu respuesta con mi cerebro de Inteligencia Artificial.");
+      
+      const actionBtn = document.getElementById('btn-quiz-action');
+      actionBtn.disabled = true;
+      actionBtn.innerHTML = "<span>Evaluando... 🧠</span>";
+      
+      const defaultApiKey = "AIzaSyCpbAxrs6y89rF5NvFTJ7CYUASi8Jr1ACI";
+      const apiKey = localStorage.getItem('gemini_api_key') || defaultApiKey;
+      const promptText = `La pregunta de ética de IA es: "${question.question}". El niño respondió libremente: "${inputVal}". Evalúa con empatía infantil si la respuesta tiene sentido ético (si promueve ayudar a la gente, cuidar plantas, cuidar la selva o usar la IA para el bien). Responde ESTRICTAMENTE con un objeto JSON (sin markdown y sin acentos raros que rompan el parser) en este formato exacto: { "isCorrect": true o false, "explanation": "un mensaje de felicitacion o consejo en 1 frase carinosa firmado por Jagüi" }`;
+      
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+      const payload = {
+        contents: [{ parts: [{ text: promptText }] }]
+      };
+      
+      fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+      .then(res => res.json())
+      .then(data => {
+        actionBtn.disabled = false;
+        actionBtn.innerHTML = "<span>Continuar ➡️</span>";
+        actionBtn.className = "btn-3d btn-secondary";
+        
+        let result = { isCorrect: true, explanation: "¡Excelente reflexión, Científico/a! Tu mente humana es muy valiosa para el futuro. 🐆🎓" };
+        
+        try {
+          if (data.candidates && data.candidates[0].content && data.candidates[0].content.parts) {
+            const rawText = data.candidates[0].content.parts[0].text;
+            // Limpiar posibles bloques de código de markdown del JSON
+            const cleanText = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
+            result = JSON.parse(cleanText);
+          }
+        } catch (e) {
+          console.warn("Fallo al parsear evaluacion de Gemini. Usando fallback aprobado.", e);
+        }
+        
+        showQuizFeedback(result.isCorrect, result.explanation, question);
+      })
+      .catch(err => {
+        console.error("Gemini Evaluation error:", err);
+        actionBtn.disabled = false;
+        actionBtn.innerHTML = "<span>Continuar ➡️</span>";
+        actionBtn.className = "btn-3d btn-secondary";
+        
+        // Fallback robusto en modo offline: se aprueba la respuesta por defecto para animar al niño
+        showQuizFeedback(true, "¡Rugido supremo de sabiduría! Me encanta cómo piensas de forma tan noble. ¡Felicidades! 🐆🌍", question);
+      });
+      return; // Detener flujo síncrono para esperar la respuesta asíncrona
     }
 
     appState.isChecking = true;
@@ -2795,67 +3010,23 @@ function handleQuizAction() {
           isCorrect = false;
         }
       });
-      // Reiniciar para la próxima pregunta
       minigameClassified = {};
     } else if (question.type === 'bounding_box') {
       isCorrect = bboxGameWon;
-      bboxGameWon = false; // Reiniciar
+      bboxGameWon = false;
     } else if (question.type === 'neural_connect') {
       isCorrect = connectedWires.length === 4;
-      connectedWires = []; // Reiniciar
+      connectedWires = [];
     } else if (question.type === 'reinforcement') {
       isCorrect = reinforcementState.confidence === 100;
-      reinforcementState.loopActive = false; // Apagar ciclo del obstáculo
+      reinforcementState.loopActive = false;
       if (reinforcementLoopTimer) {
         clearInterval(reinforcementLoopTimer);
         reinforcementLoopTimer = null;
       }
     }
 
-    const banner = document.getElementById('quiz-feedback-banner');
-    const title = document.getElementById('feedback-title');
-    const desc = document.getElementById('feedback-desc');
-    const icon = document.getElementById('feedback-icon');
-    const actionBtn = document.getElementById('btn-quiz-action');
-
-    actionBtn.innerHTML = "<span>Continuar ➡️</span>";
-    actionBtn.className = "btn-3d btn-secondary";
-
-    if (isCorrect) {
-      playAudioSynth('correct');
-      spawnConfetti(); // Celebración de confetti en tiempo real al acertar
-      setMascotExpression('jagui-instructor', 'happy');
-      
-      banner.className = "quiz-feedback-banner correct";
-      icon.innerText = "🎉";
-      title.innerText = "¡Súper Correcto!";
-      desc.innerText = question.successDesc;
-      
-      document.getElementById('instructor-bubble').innerHTML = `<strong>¡Woooow!</strong> ${question.successDesc}`;
-      speakText(`¡Súper Correcto! ${question.successDesc}`);
-    } else {
-      playAudioSynth('incorrect');
-      setMascotExpression('jagui-instructor', 'sad');
-      
-      // Retroalimentación táctil: Sacudida (shake) en la tarjeta de la pregunta
-      const qCard = document.querySelector('.lesson-question-card');
-      if (qCard) {
-        qCard.classList.add('shake-animation');
-        setTimeout(() => qCard.classList.remove('shake-animation'), 450);
-      }
-      
-      banner.className = "quiz-feedback-banner incorrect";
-      icon.innerText = "💔";
-      title.innerText = "¡Oh, no es correcto!";
-      desc.innerText = question.failDesc;
-
-      document.getElementById('instructor-bubble').innerHTML = `<strong>¡Ánimo!</strong> ${question.failDesc}`;
-      speakText(`¡Oh, no es correcto! ${question.failDesc}`);
-
-      appState.hearts -= 1;
-      const heart = document.getElementById(`heart-${appState.hearts + 1}`);
-      if (heart) heart.classList.remove('active');
-    }
+    showQuizFeedback(isCorrect, isCorrect ? question.successDesc : question.failDesc, question);
 
   } else {
     if (appState.hearts <= 0) {
@@ -2871,6 +3042,70 @@ function handleQuizAction() {
     } else {
       finishLesson();
     }
+  }
+}
+
+function showQuizFeedback(isCorrect, feedbackText, question) {
+  const banner = document.getElementById('quiz-feedback-banner');
+  const title = document.getElementById('feedback-title');
+  const desc = document.getElementById('feedback-desc');
+  const icon = document.getElementById('feedback-icon');
+  const actionBtn = document.getElementById('btn-quiz-action');
+
+  actionBtn.innerHTML = "<span>Continuar ➡️</span>";
+  actionBtn.className = "btn-3d btn-secondary";
+
+  if (isCorrect) {
+    playAudioSynth('correct');
+    spawnConfetti(); // Celebración de confetti en tiempo real al acertar
+    setMascotExpression('jagui-instructor', 'happy');
+    
+    banner.className = "quiz-feedback-banner correct";
+    icon.innerText = "🎉";
+    title.innerText = "¡Súper Correcto!";
+    desc.innerText = feedbackText;
+    
+    document.getElementById('instructor-bubble').innerHTML = `<strong>¡Woooow!</strong> ${feedbackText}`;
+    speakText(`¡Súper Correcto! ${feedbackText}`);
+  } else {
+    playAudioSynth('incorrect');
+    setMascotExpression('jagui-instructor', 'sad');
+    
+    // Retroalimentación táctil: Sacudida (shake) en la tarjeta de la pregunta
+    const qCard = document.querySelector('.lesson-question-card');
+    if (qCard) {
+      qCard.classList.add('shake-animation');
+      setTimeout(() => qCard.classList.remove('shake-animation'), 450);
+    }
+    
+    banner.className = "quiz-feedback-banner incorrect";
+    icon.innerText = "💔";
+    title.innerText = "¡Oh, no es correcto!";
+    desc.innerText = feedbackText;
+
+    document.getElementById('instructor-bubble').innerHTML = `<strong>¡Ánimo!</strong> ${feedbackText}`;
+    speakText(`¡Oh, no es correcto! ${feedbackText}`);
+
+    appState.hearts -= 1;
+    const heart = document.getElementById(`heart-${appState.hearts + 1}`);
+    if (heart) heart.classList.remove('active');
+  }
+}
+
+// Nueva función de fallback o vacía para evitar que tire error
+function handleQuizAction_Old() {
+  if (appState.hearts <= 0) {
+    playAudioSynth('incorrect');
+    document.getElementById('dialog-gameover').showModal();
+    return;
+  }
+
+  appState.currentQuestionIndex += 1;
+
+  if (appState.currentQuestionIndex < lesson.questions.length) {
+    renderQuestion();
+  } else {
+    finishLesson();
   }
 }
 
