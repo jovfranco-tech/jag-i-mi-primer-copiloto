@@ -91,7 +91,10 @@
 
 body {
   font-family: var(--font-rounded);
-  background-color: var(--bg-dark);
+  background: 
+    linear-gradient(180deg, rgba(14, 19, 31, 0.92) 0%, rgba(8, 12, 20, 0.96) 100%),
+    url('assets/cyber_jungle_bg.png') no-repeat center center fixed;
+  background-size: cover;
   color: var(--text-light);
   min-height: 100vh;
   overflow-x: hidden;
