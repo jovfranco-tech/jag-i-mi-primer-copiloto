@@ -1058,7 +1058,13 @@ let appState = {
   // Ajustes de volumen y racha de gamificación
   musicVolume: 0.5,
   sfxVolume: 0.5,
-  correctStreak: 0
+  correctStreak: 0,
+  chestXP: 0,
+  missions: {
+    lab: false,
+    chat: false,
+    xpGoal: false
+  }
 };
 
 // --- CONFIGURACIÓN DE FIREBASE (CLUB DE CIENTÍFICOS JAGÜI) ---
@@ -1557,10 +1563,15 @@ function sendChatMessage() {
   if (!text) return;
   
   input.value = ""; // Limpiar
-  playAudioSynth('click');
+  playAudioSynth('bubble');
   
   // Agregar mensaje del usuario en pantalla
   appendChatMessage("Científico/a", text, "user-msg");
+  
+  // Marcar misión de chat diaria como completada
+  appState.missions.chat = true;
+  updateGamificationPanel();
+  saveToLocalStorage();
   
   // Animación de Jagüi pensando
   setMascotExpression('jagui-welcome', 'thinking');
@@ -1602,6 +1613,8 @@ function sendChatMessage() {
 function appendChatMessage(username, text, className, isThinking = false) {
   const container = document.getElementById('chat-messages');
   if (!container) return;
+  
+  playAudioSynth('bubble');
   
   if (isThinking) {
     const thinkingMsg = document.createElement('div');
@@ -1750,6 +1763,72 @@ function playAudioSynth(type) {
         osc.start(now + idx * 0.07);
         osc.stop(now + idx * 0.07 + 0.4);
       });
+    }
+    else if (type === 'powerup') {
+      // Sweep de tono rápido ascendente (Power up de IA)
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(150, now);
+      osc.frequency.exponentialRampToValueAtTime(900, now + 0.35);
+      
+      const filter = audioCtx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(1000, now);
+      filter.frequency.linearRampToValueAtTime(300, now + 0.35);
+      
+      gain.gain.setValueAtTime(0.12 * appState.sfxVolume, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+      
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + 0.35);
+    }
+    else if (type === 'chest') {
+      // Arpegio mágico brillante (Cofre)
+      const notes = [261.63, 329.63, 392.00, 523.25, 659.25, 783.99, 1046.50, 1318.51];
+      notes.forEach((freq, idx) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now + idx * 0.05);
+        gain.gain.setValueAtTime(0.15 * appState.sfxVolume, now + idx * 0.05);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.05 + 0.3);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now + idx * 0.05);
+        osc.stop(now + idx * 0.05 + 0.35);
+      });
+    }
+    else if (type === 'equip') {
+      // Tono cyber de confirmación
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(440, now);
+      osc.frequency.setValueAtTime(880, now + 0.08);
+      gain.gain.setValueAtTime(0.15 * appState.sfxVolume, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + 0.2);
+    }
+    else if (type === 'bubble') {
+      // Sonido de pop / bubble pop para el chat
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(150, now);
+      osc.frequency.exponentialRampToValueAtTime(900, now + 0.08);
+      gain.gain.setValueAtTime(0.15 * appState.sfxVolume, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + 0.08);
     }
   } catch (e) {
     console.warn("Error al reproducir audio web sintetizado:", e);
@@ -2038,7 +2117,9 @@ function saveToLocalStorage() {
     inventory: appState.inventory,
     equippedAccessory: appState.equippedAccessory,
     musicVolume: appState.musicVolume,
-    sfxVolume: appState.sfxVolume
+    sfxVolume: appState.sfxVolume,
+    chestXP: appState.chestXP,
+    missions: appState.missions
   }));
 }
 
@@ -2058,6 +2139,8 @@ function loadFromLocalStorage() {
       appState.equippedAccessory = parsed.equippedAccessory || null;
       appState.musicVolume = parsed.musicVolume !== undefined ? parsed.musicVolume : 0.5;
       appState.sfxVolume = parsed.sfxVolume !== undefined ? parsed.sfxVolume : 0.5;
+      appState.chestXP = parsed.chestXP !== undefined ? parsed.chestXP : 0;
+      appState.missions = parsed.missions || { lab: false, chat: false, xpGoal: false };
       
       // Actualizar visualmente los sliders en la interfaz
       const mSlider = document.getElementById('music-volume-slider');
@@ -2221,6 +2304,8 @@ function renderLessonMap() {
   // Progreso hacia el siguiente gran nivel (rango)
   const levelProgress = (appState.xp % 500) / 5;
   document.getElementById('map-xp-progress').style.width = `${levelProgress}%`;
+
+  updateGamificationPanel();
 
   // Renderizar mundos secuencialmente
   WORLDS_DATA.forEach((world) => {
@@ -3247,7 +3332,7 @@ function showQuizFeedback(isCorrect, feedbackText, question) {
     
     // Si logra una racha de 3 aciertos seguidos: MODO SÚPER CEREBRO 🧠⚡
     if (appState.correctStreak === 3) {
-      playAudioSynth('victory');
+      playAudioSynth('powerup');
       spawnConfetti();
       setTimeout(spawnConfetti, 250);
       setTimeout(spawnConfetti, 500);
@@ -3266,9 +3351,7 @@ function showQuizFeedback(isCorrect, feedbackText, question) {
       // Voz especial
       speakText("¡Súper Cerebro! Racha de tres aciertos. Tu mente humana de Científico está brillando a súper velocidad. ¡Felicidades! 🧠✨");
       
-      appState.xp += 20; // 10 base + 10 extra
-      updateNavStats();
-      saveToLocalStorage();
+      addXP(20); // 10 base + 10 extra
     } else {
       playAudioSynth('correct');
       spawnConfetti(); // Celebración de confetti en tiempo real al acertar
@@ -3330,8 +3413,6 @@ function finishLesson() {
   playAudioSynth('victory');
   spawnConfetti();
 
-  appState.xp += lesson.rewardXP;
-  
   if (!appState.completedLessons.includes(appState.currentLessonId)) {
     appState.completedLessons.push(appState.currentLessonId);
   }
@@ -3339,8 +3420,7 @@ function finishLesson() {
   appState.lastPlayedDate = new Date().toISOString();
   calculateStreak();
   checkAchievements();
-  saveToLocalStorage();
-  updateNavStats();
+  addXP(lesson.rewardXP);
 
   let speech = `"¡Rugido de victoria ciber-jaguar! Has completado el Nivel ${lesson.id}: ${lesson.title}. ¡Sigue así, vas a cambiar el mundo!"`;
   let voiceSpeech = `¡Rugido de victoria ciber-jaguar! Has completado el Nivel ${lesson.id}. ¡Sigue así!`;
@@ -3422,10 +3502,118 @@ function unlockAchievement(id) {
   const ach = appState.achievements.find(a => a.id === id);
   if (ach && !ach.unlocked) {
     ach.unlocked = true;
-    appState.xp += 50;
-    saveToLocalStorage();
+    addXP(50);
     speakText(`¡Genial! Desbloqueaste la medalla de logro: ${ach.title}. ¡Rugido fenomenal!`);
   }
+}
+
+// --- SISTEMA DOCKING DE XP Y GAMIFICACIÓN ---
+function addXP(amount) {
+  appState.xp += amount;
+  
+  // Agregar al progreso del cofre
+  appState.chestXP = (appState.chestXP || 0) + amount;
+  if (appState.chestXP > 150) appState.chestXP = 150;
+  
+  // Verificar si logramos la meta diaria de 50 XP
+  if (appState.xp >= 50) {
+    appState.missions.xpGoal = true;
+  }
+  
+  updateGamificationPanel();
+  saveToLocalStorage();
+  updateNavStats();
+}
+
+function updateGamificationPanel() {
+  if (appState.xp >= 50) {
+    appState.missions.xpGoal = true;
+  }
+
+  // Renderizar estados de las misiones
+  const m1 = document.getElementById('mission-1');
+  const m2 = document.getElementById('mission-2');
+  const m3 = document.getElementById('mission-3');
+  const ms1 = document.getElementById('mission-status-1');
+  const ms2 = document.getElementById('mission-status-2');
+  const ms3 = document.getElementById('mission-status-3');
+  
+  if (m1) {
+    if (appState.missions.lab) {
+      m1.classList.add('completed');
+      if (ms1) ms1.innerText = "✅";
+    } else {
+      m1.classList.remove('completed');
+      if (ms1) ms1.innerText = "⏳";
+    }
+  }
+  
+  if (m2) {
+    if (appState.missions.chat) {
+      m2.classList.add('completed');
+      if (ms2) ms2.innerText = "✅";
+    } else {
+      m2.classList.remove('completed');
+      if (ms2) ms2.innerText = "⏳";
+    }
+  }
+  
+  if (m3) {
+    if (appState.missions.xpGoal) {
+      m3.classList.add('completed');
+      if (ms3) ms3.innerText = "✅";
+    } else {
+      m3.classList.remove('completed');
+      if (ms3) ms3.innerText = "⏳";
+    }
+  }
+  
+  // Controlar cofre selvático
+  const targetChestXP = 150;
+  const progressPercent = Math.min(100, (appState.chestXP / targetChestXP) * 100);
+  
+  const fill = document.getElementById('chest-progress-fill');
+  const text = document.getElementById('chest-progress-text');
+  const status = document.getElementById('chest-status-text');
+  const card = document.getElementById('jungle-chest-card');
+  const visualBtn = document.getElementById('chest-visual-btn');
+  
+  if (fill) fill.style.width = `${progressPercent}%`;
+  if (text) text.innerText = `${appState.chestXP} / ${targetChestXP} XP`;
+  
+  if (appState.chestXP >= targetChestXP) {
+    if (card) card.classList.add('unlocked');
+    if (status) status.innerText = "🎉 ¡Cofre Desbloqueado! Pulsa para abrir 🎁";
+    if (visualBtn) visualBtn.style.cursor = "pointer";
+  } else {
+    if (card) card.classList.remove('unlocked');
+    if (status) status.innerText = "¡Consigue XP para abrir el cofre!";
+    if (visualBtn) visualBtn.style.cursor = "not-allowed";
+  }
+}
+
+function openJungleChest() {
+  if (appState.chestXP < 150) {
+    playAudioSynth('incorrect');
+    alert("🐆 ¡Raaaawr! Aún necesitas más XP para abrir el Cofre de la Selva. ¡Sigue aprendiendo!");
+    return;
+  }
+  
+  // Abrir cofre!
+  appState.chestXP = 0;
+  const prizeXP = 50;
+  
+  playAudioSynth('chest');
+  spawnConfetti();
+  setTimeout(spawnConfetti, 250);
+  setTimeout(spawnConfetti, 500);
+  
+  alert(`🎁 ¡Raaaawr! Has abierto el Cofre de la Selva y encontraste:
+⭐ +${prizeXP} XP de Regalo
+✨ ¡Increíble energía para tu cerebro de Inteligencia Artificial!`);
+  
+  // Usar addXP para aplicar la recompensa
+  addXP(prizeXP);
 }
 
 // --- DIBUJAR PERFIL ---
@@ -3448,7 +3636,12 @@ function renderProfileView() {
   appState.achievements.forEach((ach) => {
     const cardHTML = `
       <div class="achievement-card ${ach.unlocked ? 'unlocked' : 'locked'}">
-        <div class="achievement-medal">${ach.unlocked ? ach.icon : '🔒'}</div>
+        <div class="achievement-medal">
+          ${ach.unlocked 
+            ? `<img src="assets/achievement_badge.png" alt="Medalla 3D" class="premium-medal-img">` 
+            : '🔒'
+          }
+        </div>
         <div class="achievement-title">${ach.title}</div>
         <div class="achievement-desc">${ach.desc}</div>
       </div>
@@ -3770,6 +3963,8 @@ function completeTraining() {
   speakText("¡Fabuloso! Mi red neuronal aprendió los centroides de tus datos. ¡Presiona un alimento misterioso de prueba para ver qué aprendí!");
 
   appState.isMLTrained = true;
+  appState.missions.lab = true;
+  updateGamificationPanel();
   checkAchievements();
   saveToLocalStorage();
 }

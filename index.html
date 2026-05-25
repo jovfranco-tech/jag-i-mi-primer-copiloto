@@ -85,7 +85,7 @@
             <!-- MASCOTA JAGÜI EN BIENVENIDA -->
             <div class="welcome-mascot-wrapper">
               <div class="mascot-speech-bubble welcome-bubble">
-                ¡Hola! Soy <strong>JagÜi</strong>. ¿Estás listo para entrenar cerebros artificiales conmigo? 🧠⚡
+                ¡Raaaawr! Hola Científico/a, soy Jagüi. ¡Te guiaré en un viaje increíble para dominar la Inteligencia Artificial! 🚀🐆 Pulsa JUGAR para comenzar.
               </div>
               <div class="mascot-container welcome-jagui" id="welcome-jagui-container">
                 <div class="jagui-walk-sprite welcome-sprite"></div>
@@ -297,6 +297,41 @@
           <h2 class="section-title">Tu Ruta de Aprendizaje IA</h2>
         </div>
 
+        <!-- PANEL DE GAMIFICACIÓN: MISIONES Y COFRE -->
+        <div class="gamification-panel">
+          <!-- Cofre Selvático -->
+          <div class="jungle-chest-card glass" id="jungle-chest-card">
+            <div class="chest-visual" id="chest-visual-btn" onclick="openJungleChest()">🎁</div>
+            <div class="chest-info">
+              <h4>Cofre de la Selva 🎁</h4>
+              <p id="chest-status-text">¡Consigue XP para abrir el cofre!</p>
+              <div class="chest-progress-bar-container">
+                <div class="chest-progress-fill" id="chest-progress-fill" style="width: 0%;"></div>
+              </div>
+              <span id="chest-progress-text" style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">0 / 150 XP</span>
+            </div>
+          </div>
+
+          <!-- Misiones Diarias -->
+          <div class="daily-missions-card glass">
+            <h4>🗺️ Misiones Diarias</h4>
+            <ul class="missions-list">
+              <li id="mission-1">
+                <span class="mission-status-icon" id="mission-status-1">⏳</span>
+                <span class="mission-text">Entrena cerebros en el Lab</span>
+              </li>
+              <li id="mission-2">
+                <span class="mission-status-icon" id="mission-status-2">⏳</span>
+                <span class="mission-text">Charla con Jagüi sobre IA</span>
+              </li>
+              <li id="mission-3">
+                <span class="mission-status-icon" id="mission-status-3">⏳</span>
+                <span class="mission-text">Consigue 50 XP hoy</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
         <!-- CONTENEDOR DEL MAPA VERTICAL -->
         <div class="map-container">
           <div class="map-path-svg-wrapper">
@@ -399,9 +434,12 @@
       <!-- PANTALLA 4: LABORATORIO DE ENTRENAMIENTO DE JAGÜI (ML SANDBOX) -->
       <section id="lab-screen" class="screen">
         <div class="lab-container">
-          <div class="lab-intro">
-            <h2>🐆 Laboratorio de Entrenamiento de JagÜi</h2>
-            <p>¡Aquí puedes entrenar tu propio cerebro de Inteligencia Artificial! Clasifica comida para JagÜi. Él aprenderá qué es <strong>"Saludable" 🍏</strong> y qué es <strong>"No Saludable" 🍩</strong>.</p>
+          <div class="lab-intro" style="display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;">
+            <img src="assets/jagui_scientist.png" alt="Jagüi Científico" class="lab-scientist-hero-img" style="width: 100px; height: 100px; border-radius: 20px; border: 3px solid var(--accent-cyan); box-shadow: 0 0 15px rgba(0, 255, 255, 0.4); animation: float 4s infinite ease-in-out;">
+            <div style="flex: 1; min-width: 250px;">
+              <h2>🐆 Laboratorio de Entrenamiento de JagÜi</h2>
+              <p>¡Aquí puedes entrenar tu propio cerebro de Inteligencia Artificial! Clasifica comida para JagÜi. Él aprenderá qué es <strong>"Saludable" 🍏</strong> y qué es <strong>"No Saludable" 🍩</strong>.</p>
+            </div>
           </div>
 
           <div class="lab-workspace">
@@ -671,6 +709,23 @@
                 <span>Enviar 🚀</span>
               </button>
             </div>
+          </div>
+
+          <!-- CONSEJOS DE SEGURIDAD PARA PADRES Y EDUCADORES -->
+          <div class="parental-safety-box glass" style="margin-top: 1.5rem; text-align: left;">
+            <details class="glass-details">
+              <summary>🛡️ Guía de Seguridad y Privacidad para Padres</summary>
+              <div class="safety-content" style="padding: 1rem; line-height: 1.6; font-size: 0.95rem;">
+                <p><strong>¡Hola, Papá, Mamá o Educador/a!</strong> 🧑‍🏫</p>
+                <p>En <strong>Jagüi: Mi Primer Copiloto</strong>, la seguridad y privacidad de los niños es nuestra máxima prioridad. Por ello, hemos diseñado esta app con criterios éticos estrictos:</p>
+                <ul style="margin-left: 1.25rem; margin-top: 0.5rem; display: flex; flex-direction: column; gap: 0.4rem;">
+                  <li>🔒 <strong>Privacidad Absoluta:</strong> Jagüi no solicita ni almacena datos personales de ningún tipo en sus interacciones de chat.</li>
+                  <li>🛡️ <strong>IA Filtro Seguro:</strong> El chatbot cuenta con instrucciones de sistema rigurosas para responder con un tono amigable, seguro, motivador y 100% libre de contenido inapropiado.</li>
+                  <li>🌐 <strong>Uso Ético:</strong> Enseñamos a los niños que la Inteligencia Artificial es un <em>copiloto</em> de apoyo, no un sustituto de su propio pensamiento lógico e imaginación.</li>
+                </ul>
+                <p style="margin-top: 0.75rem; font-size: 0.85rem; color: var(--text-muted);">💡 <em>Recomendación: Acompaña a tu hijo/a a conversar con Jagüi sobre sus dudas y a resolver juntos los retos de la ciber-selva.</em></p>
+              </div>
+            </details>
           </div>
 
           <div class="chat-system-config">

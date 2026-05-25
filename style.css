@@ -420,30 +420,43 @@ body {
 /* Globos de Texto */
 .mascot-speech-bubble {
   position: relative;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid var(--card-glass-border);
-  backdrop-filter: blur(10px);
-  padding: 1rem 1.5rem;
-  border-radius: var(--radius-md);
+  background: rgba(14, 21, 37, 0.75);
+  border: 2px solid var(--accent-cyan);
+  backdrop-filter: blur(12px);
+  padding: 1.2rem 1.6rem;
+  border-radius: 20px;
   font-size: 1.15rem;
-  max-width: 320px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
-  line-height: 1.4;
+  max-width: 340px;
+  box-shadow: 0 8px 32px rgba(0, 255, 255, 0.2);
+  line-height: 1.5;
   margin-bottom: 2rem;
   animation: floatBubble 5s ease-in-out infinite;
+  color: #fff;
 }
 
+/* Rabillo del bocadillo selvático */
 .mascot-speech-bubble::after {
   content: '';
   position: absolute;
-  bottom: -12px;
-  left: 50%;
-  transform: translateX(-50%);
-  border-width: 12px 12px 0;
+  bottom: -15px;
+  left: 50px;
+  border-width: 15px 15px 0;
   border-style: solid;
-  border-color: rgba(255, 255, 255, 0.08) transparent;
+  border-color: rgba(14, 21, 37, 0.75) transparent;
   display: block;
   width: 0;
+}
+.mascot-speech-bubble::before {
+  content: '';
+  position: absolute;
+  bottom: -18px;
+  left: 48px;
+  border-width: 17px 17px 0;
+  border-style: solid;
+  border-color: var(--accent-cyan) transparent;
+  display: block;
+  width: 0;
+  z-index: -1;
 }
 
 .welcome-actions {
@@ -3236,6 +3249,206 @@ body.theme-light .store-card p {
 
 .hidden {
   display: none !important;
+}
+
+/* ==========================================================================
+   GAMIFICATION PANEL: MISIONES Y COFRE
+   ========================================================================== */
+.gamification-panel {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 1.5rem;
+  margin: 1.5rem auto;
+  max-width: 800px;
+  padding: 0 1rem;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .gamification-panel {
+    grid-template-columns: 1fr;
+  }
+}
+
+.jungle-chest-card, .daily-missions-card {
+  background: rgba(20, 28, 48, 0.7);
+  border: 2px solid rgba(0, 255, 255, 0.15);
+  border-radius: 20px;
+  padding: 1.25rem;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.jungle-chest-card:hover, .daily-missions-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent-cyan);
+  box-shadow: 0 12px 40px rgba(0, 255, 255, 0.25);
+}
+
+.chest-visual {
+  font-size: 3.5rem;
+  cursor: pointer;
+  user-select: none;
+  animation: chestWobble 3s infinite ease-in-out;
+  transition: transform 0.2s ease;
+  filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.4));
+}
+
+.chest-visual:active {
+  transform: scale(0.9);
+}
+
+.jungle-chest-card.unlocked .chest-visual {
+  animation: chestPulse 1.2s infinite ease-in-out;
+  filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8));
+}
+
+.chest-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.chest-info h4 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #FFD700;
+  text-shadow: 0 0 8px rgba(255, 215, 0, 0.3);
+}
+
+.chest-info p {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.chest-progress-bar-container {
+  height: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+  overflow: hidden;
+  margin-top: 0.25rem;
+}
+
+.chest-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #FFD700, #FFA500);
+  border-radius: 5px;
+  width: 0%;
+  transition: width 0.4s ease;
+}
+
+/* Misiones Diarias */
+.daily-missions-card {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.daily-missions-card h4 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--accent-cyan);
+  text-shadow: 0 0 8px rgba(0, 255, 255, 0.3);
+}
+
+.missions-list {
+  list-style: none;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.missions-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.95rem;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 0.5rem 0.8rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.missions-list li.completed {
+  border-color: rgba(46, 204, 113, 0.4);
+  background: rgba(46, 204, 113, 0.1);
+  text-decoration: line-through;
+  color: #a5d6a7;
+}
+
+.mission-status-icon {
+  font-size: 1.1rem;
+}
+
+@keyframes chestWobble {
+  0%, 100% { transform: rotate(0deg); }
+  85% { transform: rotate(0deg); }
+  90% { transform: rotate(-5deg) scale(1.05); }
+  93% { transform: rotate(4deg) scale(1.05); }
+  96% { transform: rotate(-3deg) scale(1.05); }
+  98% { transform: rotate(2deg) scale(1.05); }
+}
+
+@keyframes chestPulse {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.15) rotate(2deg); }
+}
+
+/* parental-safety-box */
+.parental-safety-box {
+  background: rgba(20, 28, 48, 0.7);
+  border: 2px solid rgba(165, 80, 244, 0.25) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35) !important;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+/* Logros Premium 3D */
+.achievement-card.unlocked {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.08), rgba(0, 255, 255, 0.08));
+  border: 2.5px solid var(--accent-cyan);
+  box-shadow: 0 10px 25px rgba(0, 255, 255, 0.2), inset 0 0 15px rgba(255, 215, 0, 0.1);
+  animation: float 4s infinite ease-in-out;
+  position: relative;
+  overflow: hidden;
+}
+
+.achievement-card.unlocked::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 45%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 55%
+  );
+  transform: rotate(-45deg);
+  animation: shinyGold 4s infinite ease-in-out;
+  pointer-events: none;
+}
+
+@keyframes shinyGold {
+  0% { transform: translate(-30%, -30%) rotate(-45deg); }
+  20%, 100% { transform: translate(30%, 30%) rotate(-45deg); }
+}
+
+.achievement-medal img {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
 }
 
 
