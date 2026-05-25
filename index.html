@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jagüi: Mi Primer Copiloto - ¡Aprende Inteligencia Artificial Jugando!</title>
+  <meta name="description" content="Acompaña a JagÜi, el jaguar tecnológico, en una aventura interactiva estilo Duolingo para aprender los secretos de la Inteligencia Artificial. ¡Diseñado para niños!">
+  <!-- Google Fonts - Fredoka (Rounded, Kid-friendly) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- CONTENEDOR PRINCIPAL (APP SHELL) -->
+  <div id="app-shell" class="app-shell">
+    
+    <!-- BARRA LATERAL / DE NAVEGACIÓN (Desktop & Mobile responsive) -->
+    <nav class="nav-bar">
+      <div class="nav-brand">
+        <span class="brand-emoji">🐆</span>
+        <span class="brand-text" style="font-size: 1.35rem;">Jagüi<span class="brand-sub" style="font-size: 0.75rem;">Copiloto</span></span>
+      </div>
+      
+      <div class="nav-links">
+        <button id="btn-nav-map" class="nav-btn active" onclick="switchScreen('map-screen')">
+          <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          <span>Mapa</span>
+        </button>
+        <button id="btn-nav-lab" class="nav-btn" onclick="switchScreen('lab-screen')">
+          <svg class="nav-icon" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+          <span>El Lab</span>
+        </button>
+        <button id="btn-nav-profile" class="nav-btn" onclick="switchScreen('profile-screen')">
+          <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+          <span>Logros</span>
+        </button>
+      </div>
+
+      <div class="nav-user-preview" onclick="switchScreen('profile-screen')">
+        <div class="nav-avatar">🐆</div>
+        <div class="nav-user-info">
+          <span class="nav-username" id="nav-username-display">Científico/a</span>
+          <span class="nav-user-xp" id="nav-xp-display">0 XP</span>
+        </div>
+      </div>
+    </nav>
+
+    <!-- ÁREA DE CONTENIDO PRINCIPAL -->
+    <main class="main-content">
+      
+      <!-- PANTALLA 1: BIENVENIDA -->
+      <section id="welcome-screen" class="screen active">
+        <div class="welcome-container">
+          <div class="welcome-visual">
+            <div class="logo-container">
+              <span class="sparkle s1">✨</span>
+              <span class="sparkle s2">⭐</span>
+              <h1 class="game-title" style="font-size: 3.8rem; letter-spacing: -1px;">JAGÜI</h1>
+              <h2 class="game-subtitle" style="font-size: 1.6rem; letter-spacing: 2px;">Mi Primer Copiloto</h2>
+              <p class="tagline">¡Conviértete en un maestro de la Inteligencia Artificial junto a tu jaguar tecnológico!</p>
+            </div>
+            
+            <!-- MASCOTA JAGÜI EN BIENVENIDA -->
+            <div class="welcome-mascot-wrapper">
+              <div class="mascot-speech-bubble welcome-bubble">
+                ¡Hola! Soy <strong>JagÜi</strong>. ¿Estás listo para entrenar cerebros artificiales conmigo? 🧠⚡
+              </div>
+              <div class="mascot-container welcome-jagui" id="welcome-jagui-container">
+                <div class="jagui-walk-sprite welcome-sprite"></div>
+                <div style="display: none;">
+                  <!-- SVG DE JAGÜI (Plantilla para <use> en lecciones) -->
+                  <svg class="jagui-svg state-happy" viewBox="0 0 200 220" id="jagui-welcome">
+                    <defs>
+                      <!-- Degradados de color -->
+                      <radialGradient id="body-grad" cx="45%" cy="40%" r="60%">
+                        <stop offset="0%" stop-color="#FFBF00" />
+                        <stop offset="60%" stop-color="#FF9000" />
+                        <stop offset="100%" stop-color="#D45D00" />
+                      </radialGradient>
+                      <linearGradient id="collar-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#00FFFF" />
+                        <stop offset="100%" stop-color="#008B8B" />
+                      </linearGradient>
+                      <linearGradient id="node-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#FFF" />
+                        <stop offset="100%" stop-color="#A5F2F3" />
+                      </linearGradient>
+                      <filter id="glow-light" x="-20%" y="-20%" width="140%" height="140%">
+                        <feGaussianBlur stdDeviation="4" result="blur" />
+                        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                      </filter>
+                    </defs>
+
+                    <!-- COLA DEL JAGUAR -->
+                    <path class="jagui-tail" d="M 50,180 C 20,190 10,160 15,130 C 18,110 32,105 28,125 C 24,145 32,175 60,170 Z" fill="url(#body-grad)" stroke="#4A1E00" stroke-width="2.5" />
+
+                    <!-- CUERPO / PATAS TRASERAS -->
+                    <ellipse cx="100" cy="165" rx="55" ry="40" fill="url(#body-grad)" stroke="#4A1E00" stroke-width="2.5" />
+                    
+                    <!-- MANCHAS DEL CUERPO (Rosetones) -->
+                    <g class="jagui-spots">
+                      <!-- Spot 1 -->
+                      <path d="M 65,155 Q 60,150 63,145 Q 68,143 72,148 Q 75,155 65,155 Z" fill="#2E1605" />
+                      <circle cx="67" cy="149" r="2" fill="#FF9000" />
+                      <!-- Spot 2 -->
+                      <path d="M 135,155 Q 140,150 137,145 Q 132,143 128,148 Q 125,155 135,155 Z" fill="#2E1605" />
+                      <circle cx="133" cy="149" r="2" fill="#FF9000" />
+                      <!-- Spot 3 -->
+                      <path d="M 100,180 Q 95,175 97,170 Q 105,168 103,176 Q 101,181 100,180 Z" fill="#2E1605" />
+                    </g>
+
+                    <!-- PATAS DELANTERAS -->
+                    <rect x="75" y="155" width="18" height="42" rx="9" fill="url(#body-grad)" stroke="#4A1E00" stroke-width="2.5" />
+                    <rect x="107" y="155" width="18" height="42" rx="9" fill="url(#body-grad)" stroke="#4A1E00" stroke-width="2.5" />
+                    <!-- Almohadillas patas -->
+                    <line x1="84" y1="190" x2="84" y2="195" stroke="#4A1E00" stroke-width="2" />
+                    <line x1="116" y1="190" x2="116" y2="195" stroke="#4A1E00" stroke-width="2" />
+
+                    <!-- COLLAR DE IA -->
+                    <path d="M 72,125 Q 100,140 128,125 Q 131,135 125,138 Q 100,150 75,138 Q 69,135 72,125 Z" fill="url(#collar-grad)" stroke="#003E3E" stroke-width="2" />
+                    <!-- Colgante Nodo IA -->
+                    <circle class="collar-pendant" cx="100" cy="145" r="9" fill="url(#node-grad)" stroke="#00FFFF" stroke-width="2" filter="url(#glow-light)" />
+                    <path d="M 97,145 L 100,139 L 103,145 L 97,143 Z" fill="#008B8B" />
+
+                    <!-- OREJAS -->
+                    <!-- Oreja Izquierda -->
+                    <g class="jagui-ear-left">
+                      <ellipse cx="65" cy="55" rx="18" ry="18" fill="url(#body-grad)" stroke="#4A1E00" stroke-width="2.5" />
+                      <ellipse cx="65" cy="56" rx="11" ry="11" fill="#FF9E9E" />
+                    </g>
+                    <!-- Oreja Derecha -->
+                    <g class="jagui-ear-right">
+                      <ellipse cx="135" cy="55" rx="18" ry="18" fill="url(#body-grad)" stroke="#4A1E00" stroke-width="2.5" />
+                      <ellipse cx="135" cy="56" rx="11" ry="11" fill="#FF9E9E" />
+                    </g>
+
+                    <!-- CABEZA -->
+                    <ellipse cx="100" cy="85" rx="46" ry="38" fill="url(#body-grad)" stroke="#4A1E00" stroke-width="2.5" />
+
+                    <!-- MANCHAS EN LA CARA -->
+                    <g class="jagui-face-spots">
+                      <!-- Izquierda -->
+                      <ellipse cx="65" cy="80" rx="6" ry="4" fill="#2E1605" transform="rotate(-15 65 80)" />
+                      <ellipse cx="62" cy="92" rx="5" ry="3" fill="#2E1605" transform="rotate(-10 62 92)" />
+                      <!-- Derecha -->
+                      <ellipse cx="135" cy="80" rx="6" ry="4" fill="#2E1605" transform="rotate(15 135 80)" />
+                      <ellipse cx="138" cy="92" rx="5" ry="3" fill="#2E1605" transform="rotate(10 138 92)" />
+                      <!-- Frente -->
+                      <ellipse cx="100" cy="58" rx="4" ry="7" fill="#2E1605" />
+                      <ellipse cx="92" cy="58" rx="3" ry="5" fill="#2E1605" />
+                      <ellipse cx="108" cy="58" rx="3" ry="5" fill="#2E1605" />
+                    </g>
+
+                    <!-- MEJILLAS / HOCICO -->
+                    <ellipse cx="91" cy="104" rx="11" ry="9" fill="#FFF2D6" />
+                    <ellipse cx="109" cy="104" rx="11" ry="9" fill="#FFF2D6" />
+                    <!-- Nariz -->
+                    <polygon points="95,97 105,97 100,103" fill="#E86363" stroke="#4A1E00" stroke-width="1.5" />
+                    
+                    <!-- BOCA (Modular) -->
+                    <!-- Boca Feliz (Sonrisa amplia) -->
+                    <path class="mouth-happy" d="M 87,104 Q 100,118 113,104 Q 100,123 87,104 Z" fill="#750C0C" stroke="#4A1E00" stroke-width="2" />
+                    <!-- Boca Normal (Línea curva sutil) -->
+                    <path class="mouth-normal" d="M 90,105 Q 95,108 100,105 Q 105,108 110,105" fill="none" stroke="#4A1E00" stroke-width="2" stroke-linecap="round" />
+                    <!-- Boca Pensando (Línea casi recta) -->
+                    <path class="mouth-thinking" d="M 92,107 L 108,107" fill="none" stroke="#4A1E00" stroke-width="2" stroke-linecap="round" />
+                    <!-- Boca Triste (Curva hacia abajo) -->
+                    <path class="mouth-sad" d="M 91,110 Q 100,104 109,110" fill="none" stroke="#4A1E00" stroke-width="2.5" stroke-linecap="round" />
+
+                    <!-- OJOS (Modulares) -->
+                    <!-- Ojo Izquierdo Normal -->
+                    <g class="eye-normal eye-left-normal">
+                      <circle cx="80" cy="80" r="14" fill="#FFF" stroke="#4A1E00" stroke-width="2" />
+                      <circle cx="82" cy="80" r="9" fill="#00C49F" />
+                      <circle cx="83" cy="80" r="5" fill="#1C1C1C" />
+                      <circle cx="80" cy="76" r="3" fill="#FFF" />
+                      <circle cx="85" cy="83" r="1.5" fill="#FFF" />
+                    </g>
+                    <!-- Ojo Derecho Normal -->
+                    <g class="eye-normal eye-right-normal">
+                      <circle cx="120" cy="80" r="14" fill="#FFF" stroke="#4A1E00" stroke-width="2" />
+                      <circle cx="118" cy="80" r="9" fill="#00C49F" />
+                      <circle cx="117" cy="80" r="5" fill="#1C1C1C" />
+                      <circle cx="115" cy="76" r="3" fill="#FFF" />
+                      <circle cx="120" cy="83" r="1.5" fill="#FFF" />
+                    </g>
+
+                    <!-- Ojos Felices (Curvas ^ ^) -->
+                    <g class="eye-happy">
+                      <path d="M 68,82 Q 80,68 92,82" fill="none" stroke="#1C1C1C" stroke-width="4.5" stroke-linecap="round" />
+                      <path d="M 108,82 Q 120,68 132,82" fill="none" stroke="#1C1C1C" stroke-width="4.5" stroke-linecap="round" />
+                    </g>
+
+                    <!-- Ojos Pensando (Guiño) -->
+                    <g class="eye-thinking">
+                      <circle cx="80" cy="80" r="14" fill="#FFF" stroke="#4A1E00" stroke-width="2" />
+                      <circle cx="83" cy="80" r="9" fill="#00C49F" />
+                      <circle cx="84" cy="80" r="5" fill="#1C1C1C" />
+                      <circle cx="81" cy="76" r="3" fill="#FFF" />
+                      <path d="M 108,80 Q 120,86 132,80" fill="none" stroke="#1C1C1C" stroke-width="4" stroke-linecap="round" />
+                    </g>
+
+                    <!-- Ojos Tristes -->
+                    <g class="eye-sad">
+                      <circle cx="80" cy="82" r="13" fill="#FFF" stroke="#4A1E00" stroke-width="2" />
+                      <circle cx="80" cy="84" r="8" fill="#00C49F" />
+                      <circle cx="80" cy="84" r="5" fill="#1C1C1C" />
+                      <circle cx="78" cy="81" r="2.5" fill="#FFF" />
+                      <path d="M 66,70 Q 80,74 92,66" fill="none" stroke="#4A1E00" stroke-width="3" stroke-linecap="round" />
+                      <circle cx="120" cy="82" r="13" fill="#FFF" stroke="#4A1E00" stroke-width="2" />
+                      <circle cx="120" cy="84" r="8" fill="#00C49F" />
+                      <circle cx="120" cy="84" r="5" fill="#1C1C1C" />
+                      <circle cx="118" cy="81" r="2.5" fill="#FFF" />
+                      <path d="M 108,66 Q 120,74 134,70" fill="none" stroke="#4A1E00" stroke-width="3" stroke-linecap="round" />
+                    </g>
+
+                    <!-- BIGOTES -->
+                    <g stroke="#4A1E00" stroke-width="1.5" stroke-linecap="round">
+                      <line x1="68" y1="104" x2="52" y2="101" />
+                      <line x1="69" y1="108" x2="50" y2="109" />
+                      <line x1="132" y1="104" x2="148" y2="101" />
+                      <line x1="131" y1="108" x2="150" y2="109" />
+                    </g>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Botones de Acción de Bienvenida -->
+            <div class="welcome-actions">
+              <button id="btn-start-game" class="btn-3d btn-primary" onclick="startGame(false)">
+                <span>¡Empezar Aventura! 🚀</span>
+              </button>
+              <button id="btn-resume-game" class="btn-3d btn-secondary hidden" onclick="startGame(true)">
+                <span>Continuar Aventura 🐆</span>
+              </button>
+            </div>
+            
+            <div class="voice-options">
+              <label class="toggle-switch">
+                <input type="checkbox" id="voice-synthesis-toggle" checked>
+                <span class="slider round"></span>
+              </label>
+              <span class="toggle-label">Activar voz de JagÜi 🗣️</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PANTALLA 2: MAPA DE LECCIONES -->
+      <section id="map-screen" class="screen">
+        <div class="screen-header">
+          <div class="header-stats">
+            <div class="stat-badge xp-badge">
+              <span class="stat-icon">⭐</span>
+              <div class="xp-details">
+                <span class="stat-val" id="map-xp">0 XP</span>
+                <div class="mini-progress-track">
+                  <div class="mini-progress-fill" id="map-xp-progress" style="width: 0%;"></div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="stat-badge hearts-badge">
+              <span class="stat-icon">❤️</span>
+              <span class="stat-val heart-count" id="map-hearts">3</span>
+            </div>
+          </div>
+          <h2 class="section-title">Tu Ruta de Aprendizaje IA</h2>
+        </div>
+
+        <!-- CONTENEDOR DEL MAPA VERTICAL -->
+        <div class="map-container">
+          <div class="map-path-svg-wrapper">
+            <!-- Línea de conexión decorativa entre islas -->
+            <svg class="map-connector-line" viewBox="0 0 100 800" preserveAspectRatio="none">
+              <path d="M 50,80 Q 20,200 80,320 T 30,560 T 50,750" fill="none" stroke="rgba(0, 255, 255, 0.25)" stroke-width="6" stroke-dasharray="12 8" />
+              <path class="animated-path-flow" d="M 50,80 Q 20,200 80,320 T 30,560 T 50,750" fill="none" stroke="cyan" stroke-width="4" stroke-dasharray="15 30" />
+            </svg>
+          </div>
+
+          <!-- ISLAS DE LECCIONES -->
+          <div class="islands-list" id="islands-container">
+            <!-- Se generará dinámicamente desde JS, pero aquí hay un boceto estructural para SEO/Semántica -->
+            <div class="lesson-island active" data-lesson-id="1">
+              <div class="island-floating-body">
+                <div class="island-badge">🧠</div>
+                <div class="island-number">1</div>
+              </div>
+              <div class="island-info">
+                <h3>¿Qué es la IA?</h3>
+                <p>Enseña trucos a una computadora</p>
+                <button class="btn-3d btn-primary btn-sm" onclick="startLesson(1)">¡Jugar!</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PANTALLA 3: QUIZ DE LECCIÓN -->
+      <section id="lesson-screen" class="screen">
+        <!-- BARRA SUPERIOR DE LA LECCIÓN -->
+        <div class="lesson-header">
+          <button class="btn-close-lesson" onclick="confirmExitLesson()">✕</button>
+          
+          <div class="lesson-progress-bar-container">
+            <div class="lesson-progress-fill" id="lesson-progress-fill" style="width: 0%;"></div>
+            <div class="lesson-progress-jagui" id="lesson-progress-jagui" style="left: 0%;"><div class="jagui-walk-sprite mini-sprite"></div></div>
+          </div>
+
+          <div class="lesson-lives">
+            <span class="heart active" id="heart-1">❤️</span>
+            <span class="heart active" id="heart-2">❤️</span>
+            <span class="heart active" id="heart-3">❤️</span>
+          </div>
+        </div>
+
+        <!-- CUERPO DEL QUIZ -->
+        <div class="lesson-body-grid">
+          
+          <!-- LADO IZQUIERDO: JAGÜI Y SU GLOBO DE TEXTO -->
+          <div class="lesson-instructor-card">
+            <div class="instructor-speech-bubble" id="instructor-bubble">
+              ¡Cargando retos! Prepárate...
+            </div>
+            
+            <div class="instructor-mascot-container">
+              <!-- Reutilizamos el SVG pero con ID único para control independiente -->
+              <svg class="jagui-svg state-normal" viewBox="0 0 200 220" id="jagui-instructor">
+                <!-- Usará las mismas definiciones del SVG de bienvenida -->
+                <use href="#jagui-welcome" />
+              </svg>
+            </div>
+            <button class="btn-speak-text" id="btn-speak-question" onclick="speakInstructorText()" title="Escuchar a JagÜi">
+              🔊 Escuchar
+            </button>
+          </div>
+
+          <!-- LADO DERECHO: EL DESAFÍO ACTIVO -->
+          <div class="lesson-question-card glass">
+            <h3 class="question-title" id="question-title">¿Cuál es el misterioso reto de la IA?</h3>
+            
+            <!-- CONTENEDOR DINÁMICO DE RESPUESTAS -->
+            <div class="question-interactive-area" id="question-area">
+              <!-- Cargado por JS según tipo de pregunta -->
+            </div>
+          </div>
+        </div>
+
+        <!-- CONTROL DE RESPUESTAS DEL QUIZ (FOOTER) -->
+        <footer class="lesson-footer">
+          <div class="lesson-footer-content">
+            <div id="quiz-feedback-banner" class="quiz-feedback-banner hidden">
+              <span class="feedback-icon" id="feedback-icon">🎉</span>
+              <div class="feedback-text-container">
+                <span class="feedback-title" id="feedback-title">¡Excelente!</span>
+                <span class="feedback-desc" id="feedback-desc">¡Vas muy bien!</span>
+              </div>
+            </div>
+            <button id="btn-quiz-action" class="btn-3d btn-primary" onclick="handleQuizAction()">
+              <span>Comprobar 🔍</span>
+            </button>
+          </div>
+        </footer>
+      </section>
+
+      <!-- PANTALLA 4: LABORATORIO DE ENTRENAMIENTO DE JAGÜI (ML SANDBOX) -->
+      <section id="lab-screen" class="screen">
+        <div class="lab-container">
+          <div class="lab-intro">
+            <h2>🐆 Laboratorio de Entrenamiento de JagÜi</h2>
+            <p>¡Aquí puedes entrenar tu propio cerebro de Inteligencia Artificial! Clasifica comida para JagÜi. Él aprenderá qué es <strong>"Saludable" 🍏</strong> y qué es <strong>"No Saludable" 🍩</strong>.</p>
+          </div>
+
+          <div class="lab-workspace">
+            
+            <!-- CAJA A: SALUDABLE -->
+            <div class="lab-bin glass" id="bin-healthy" ondragover="allowDrop(event)" ondrop="handleDrop(event, 'healthy')">
+              <div class="bin-header healthy-header">🍏 Saludable</div>
+              <div class="bin-counter" id="count-healthy">0 ejemplos</div>
+              <div class="bin-items-grid" id="bin-healthy-items"></div>
+            </div>
+
+            <!-- CINTA DE PRODUCTOS Y MÁQUINA DE ML -->
+            <div class="lab-center-console">
+              <div class="ml-machine-box glass">
+                <div class="ml-scanner-beam"></div>
+                <div class="ml-current-item-card" id="ml-active-item" draggable="true" ondragstart="handleDragStart(event)">
+                  <!-- Rellenado por JS -->
+                  🍎
+                </div>
+                <span class="drag-hint">¡Arrástrame a una caja! 👆</span>
+              </div>
+              
+              <div class="ml-brain-visualization">
+                <svg class="neural-net-svg" viewBox="0 0 100 60" id="lab-neural-net">
+                  <!-- Red neuronal animada -->
+                  <g class="neural-links" stroke="#555" stroke-width="1.5">
+                    <line x1="10" y1="30" x2="50" y2="15" />
+                    <line x1="10" y1="30" x2="50" y2="45" />
+                    <line x1="50" y1="15" x2="90" y2="30" />
+                    <line x1="50" y1="45" x2="90" y2="30" />
+                  </g>
+                  <circle cx="10" cy="30" r="6" fill="cyan" />
+                  <circle cx="50" cy="15" r="6" fill="magenta" />
+                  <circle cx="50" cy="45" r="6" fill="magenta" />
+                  <circle cx="90" cy="30" r="6" fill="yellow" />
+                </svg>
+                <div class="brain-status-label" id="brain-status">Esperando entrenamiento...</div>
+              </div>
+
+              <div class="lab-actions">
+                <button class="btn-3d btn-primary" id="btn-train-ml" onclick="trainMLModel()" disabled>
+                  <span>🧠 Entrenar IA</span>
+                </button>
+                <button class="btn-3d btn-secondary" onclick="resetMLSandbox()">
+                  <span>Reiniciar</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- CAJA B: NO SALUDABLE -->
+            <div class="lab-bin glass" id="bin-junk" ondragover="allowDrop(event)" ondrop="handleDrop(event, 'junk')">
+              <div class="bin-header junk-header">🍩 No Saludable</div>
+              <div class="bin-counter" id="count-junk">0 ejemplos</div>
+              <div class="bin-items-grid" id="bin-junk-items"></div>
+            </div>
+
+          </div>
+
+          <!-- SECCIÓN DE PRUEBAS DE LA IA ENTRENADA -->
+          <div class="lab-test-section glass hidden" id="lab-test-area">
+            <h3>🧪 ¡Prueba tu Cerebro Artificial!</h3>
+            <p>Ahora coloca un alimento misterioso en el escáner y pregúntale a JagÜi si su IA sabe clasificarlo.</p>
+            <div class="test-items-selector" id="test-items-list">
+              <!-- Alimentos misteriosos cargados por JS -->
+            </div>
+            
+            <div class="test-feedback-box" id="test-feedback">
+              <div class="test-jagui-reaction">
+                <svg class="jagui-svg state-normal" viewBox="0 0 200 220" id="jagui-lab-test" style="width: 100px; height: 110px;">
+                  <use href="#jagui-welcome" />
+                </svg>
+              </div>
+              <div class="test-speech-bubble" id="test-bubble">
+                ¡Dame un alimento de prueba para ver qué aprendí!
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- PANTALLA 5: LOGROS Y PERFIL DEL CIENTÍFICO -->
+      <section id="profile-screen" class="screen">
+        <div class="profile-container">
+          
+          <div class="profile-header-card glass">
+            <div class="profile-avatar-large">🐆</div>
+            <div class="profile-identity">
+              <div class="username-edit-container">
+                <input type="text" id="username-input" class="username-input" value="Científico de IA" onchange="saveUsername()">
+                <span class="edit-icon">✏️</span>
+              </div>
+              <p class="profile-rank" id="profile-rank-label">Explorador de Datos 🌟</p>
+            </div>
+            
+            <div class="profile-stats-grid">
+              <div class="p-stat">
+                <span class="p-stat-val" id="prof-xp">0</span>
+                <span class="p-stat-lbl">XP Totales</span>
+              </div>
+              <div class="p-stat">
+                <span class="p-stat-val" id="prof-lessons">0/5</span>
+                <span class="p-stat-lbl">Lecciones</span>
+              </div>
+              <div class="p-stat">
+                <span class="p-stat-val" id="prof-streak">1 Día</span>
+                <span class="p-stat-lbl">Racha</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="achievements-section">
+            <h3 class="section-subtitle">🏆 Tus Medallas y Logros</h3>
+            <div class="achievements-grid" id="achievements-container">
+              <!-- Generado dinámicamente por JS -->
+            </div>
+          </div>
+          
+          <div class="danger-zone">
+            <button class="btn-3d btn-secondary btn-sm" onclick="confirmResetProgress()">
+              ⚠️ Borrar Progreso y Reiniciar App
+            </button>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+
+  </div>
+
+  <!-- ==================== DIÁLOGOS NATIVOS (<dialog>) ==================== -->
+  
+  <!-- DIÁLOGO: LECCIÓN COMPLETADA (VICTORIA) -->
+  <dialog id="dialog-victory" class="glass-dialog">
+    <div class="dialog-content">
+      <div class="dialog-mascot">
+        <svg class="jagui-svg state-happy" viewBox="0 0 200 220" style="width: 130px; height: 145px;">
+          <use href="#jagui-welcome" />
+        </svg>
+      </div>
+      <div class="dialog-info">
+        <h2>🎉 ¡Increíble Trabajo!</h2>
+        <p id="victory-speech">"¡Raaaawr! Has completado el reto a la perfección. ¡Tu cerebro es brillante!"</p>
+        
+        <div class="victory-rewards">
+          <div class="reward-box">
+            <span class="reward-icon">⭐</span>
+            <span class="reward-value" id="reward-xp">+100 XP</span>
+          </div>
+          <div class="reward-box">
+            <span class="reward-icon">🏆</span>
+            <span class="reward-value">Nivel Completado</span>
+          </div>
+        </div>
+
+        <button class="btn-3d btn-primary" onclick="closeVictoryDialog()">
+          <span>¡Continuar! 🗺️</span>
+        </button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- DIÁLOGO: SIN VIDAS / FIN DE JUEGO -->
+  <dialog id="dialog-gameover" class="glass-dialog">
+    <div class="dialog-content">
+      <div class="dialog-mascot">
+        <svg class="jagui-svg state-sad" viewBox="0 0 200 220" style="width: 130px; height: 145px;">
+          <use href="#jagui-welcome" />
+        </svg>
+      </div>
+      <div class="dialog-info">
+        <h2>💔 ¡Oh, no! Te has quedado sin vidas</h2>
+        <p>"No te preocupes. Cometer errores es parte de aprender. ¡La IA también aprende equivocándose!"</p>
+        
+        <div class="gameover-action">
+          <button class="btn-3d btn-primary" onclick="refillHeartsAndRetry()">
+            <span>Recargar Vidas ❤️ (+50 XP cost)</span>
+          </button>
+          <button class="btn-3d btn-secondary" onclick="exitToMapFromGameover()">
+            <span>Volver al Mapa 🗺️</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- DIÁLOGO: CONFIRMACIÓN SALIDA -->
+  <dialog id="dialog-exit-confirm" class="glass-dialog">
+    <div class="dialog-content">
+      <h2>¿Seguro que quieres salir?</h2>
+      <p>Si sales ahora, perderás el progreso de esta lección en curso. ¡JagÜi te extrañará!</p>
+      <div class="exit-actions">
+        <button class="btn-3d btn-secondary" onclick="document.getElementById('dialog-exit-confirm').close()">
+          <span>Seguir Jugando 🐆</span>
+        </button>
+        <button class="btn-3d btn-danger" onclick="exitLessonImmediately()">
+          <span>Salir de todas formas</span>
+        </button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- CANVAS PARA CONFETTI DE CELEBRACIÓN -->
+  <canvas id="confetti-canvas" class="confetti-canvas"></canvas>
+
+  <!-- SCRIPTS -->
+  <script src="app.js"></script>
+</body>
+</html>
