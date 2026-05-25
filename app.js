@@ -9,7 +9,8 @@ const WORLDS_DATA = [
   { id: 3, name: "Mundo 3: El Cerebro de la IA", desc: "Las redes neuronales digitales 🌌", color: "purple" },
   { id: 4, name: "Mundo 4: Los Sentidos de la IA", desc: "Visión, voz y lenguajes ciber ⚡", color: "blue" },
   { id: 5, name: "Mundo 5: Robótica y Espacio", desc: "Asistentes, autos y viajes a Marte 🤖", color: "red" },
-  { id: 6, name: "Mundo 6: IA Generativa y Ética", desc: "Creación de arte y reglas del bien 🏆", color: "yellow" }
+  { id: 6, name: "Mundo 6: IA Generativa y Ética", desc: "Creación de arte y reglas del bien 🏆", color: "yellow" },
+  { id: 7, name: "Mundo Secreto: El Templo", desc: "La Maestría de la Superinteligencia 🌟", color: "gold" }
 ];
 
 // --- CURRICULUM DE IA PARA NIÑOS (30 NIVELES) ---
@@ -991,6 +992,28 @@ const LESSONS_DATA = {
         speech: "¡Científico/a! Llegamos al final del viaje de 30 niveles. Háblame de corazón: ¿Por qué crees que debemos usar la Inteligencia Artificial para el bien del planeta?",
         successDesc: "¡Soberbio rugido de sabiduría! Tu respuesta es ética, humana y demuestra que estás 100% listo para cambiar el futuro. ¡Felicidades, Maestro de la IA! 🐆🎓",
         failDesc: "¡Casi! Cuéntame un poco más sobre cómo ayudar al planeta o a las personas para que tu respuesta sea súper brillante."
+      }
+    ]
+  },
+  31: {
+    id: 31,
+    title: "El Templo de la Superinteligencia",
+    subtitle: "El secreto del jaguar tecnológico",
+    badge: "🌟",
+    rewardXP: 500,
+    questions: [
+      {
+        type: "choice",
+        question: "¡Felicidades, Científico/a! Has desbloqueado el Templo Secreto gracias a tu alta maestría. ¿Cuál es tu copiloto tecnológico definitivo?",
+        options: [
+          { text: "Jagüi, mi primer copiloto de Inteligencia Artificial que potencia mi mente humana 🐆🤖", isCorrect: true },
+          { text: "Un lápiz y papel sin cables", isCorrect: false },
+          { text: "Una calculadora de pilas", isCorrect: false }
+        ],
+        hint: "¡Él te ha guiado durante todo el viaje selvático!",
+        speech: "¡Bienvenido al Templo Secreto de la Superinteligencia! Has demostrado ser un Científico excepcional. ¿Quién ha sido tu primer copiloto?",
+        successDesc: "¡Soberbio! Has alcanzado la maestría máxima. Jagüi y tú son ahora el equipo de copilotos del futuro de la IA. ¡Rugido supremo eterno! 🐆🎓",
+        failDesc: "¡Uy! Piensa en tu amigo el jaguar tecnológico con collar de circuitos cian."
       }
     ]
   }
@@ -2140,6 +2163,53 @@ function startGame(isResume) {
   switchScreen('map-screen');
 }
 
+function getIslandSvg(stateClass) {
+  let grassColor1 = "#2ECC71";
+  let grassColor2 = "#27AE60";
+  let circColor = "#00FFFF";
+  let landColor = "#8E44AD"; // Tierra selvática con toques neón
+  let circOpacity = "0.8";
+  
+  if (stateClass === "completed") {
+    grassColor1 = "#00FFFF";
+    grassColor2 = "#008B8B";
+    circColor = "#39FF14";
+    landColor = "#1B4F72";
+  } else if (stateClass === "active") {
+    grassColor1 = "#FFD700";
+    grassColor2 = "#FF8C00";
+    circColor = "#FF00FF";
+    landColor = "#6E2C00";
+  } else if (stateClass === "locked") {
+    grassColor1 = "#7F8C8D";
+    grassColor2 = "#95A5A6";
+    circColor = "#566573";
+    landColor = "#2C3E50";
+    circOpacity = "0.2";
+  }
+  
+  return `
+    <svg viewBox="0 0 120 120" class="island-svg-bg" style="position: absolute; top: -5px; left: -5px; width: 120px; height: 120px; z-index: 1; pointer-events: none; filter: drop-shadow(0 8px 16px rgba(0,0,0,0.55));">
+      <!-- Sombra proyectada por la isla -->
+      <ellipse cx="60" cy="98" rx="35" ry="8" fill="rgba(0,0,0,0.3)" />
+      <!-- Base flotante de tierra tridimensional (2.5D) -->
+      <path d="M20 60 Q60 42 100 60 L85 92 Q60 102 35 92 Z" fill="${landColor}" />
+      <path d="M35 92 Q60 102 85 92 L85 95 Q60 105 35 95 Z" fill="rgba(0,0,0,0.4)" />
+      <!-- Capa de pasto superior selvática en perspectiva -->
+      <path d="M20 60 Q60 42 100 60 Q88 72 60 66 Q32 72 20 60 Z" fill="${grassColor2}" />
+      <path d="M25 61 Q60 45 95 61 Q83 67 60 63 Q37 67 25 61 Z" fill="${grassColor1}" opacity="0.9" />
+      <!-- Filamentos y lianas de circuitos colgando -->
+      <path d="M32 75 L32 98 M32 98 L24 104" stroke="${circColor}" stroke-width="1.5" fill="none" opacity="${circOpacity}" />
+      <circle cx="24" cy="104" r="2.5" fill="${circColor}" opacity="${circOpacity}" />
+      
+      <path d="M88 75 L88 98 M88 98 L96 104" stroke="${circColor}" stroke-width="1.5" fill="none" opacity="${circOpacity}" />
+      <circle cx="96" cy="104" r="2.5" fill="${circColor}" opacity="${circOpacity}" />
+      
+      <path d="M60 80 Q55 96 58 108" stroke="#1d4632" stroke-width="2" fill="none" opacity="0.8" />
+    </svg>
+  `;
+}
+
 // --- DIBUJAR MAPA MULTI-MUNDO DE 30 NIVELES ---
 function renderLessonMap() {
   const container = document.getElementById('islands-container');
@@ -2154,7 +2224,23 @@ function renderLessonMap() {
 
   // Renderizar mundos secuencialmente
   WORLDS_DATA.forEach((world) => {
-    // 1. Agregar banner divisor de Mundo
+    // 1. Filtrar lecciones del Mundo correspondiente primero
+    const worldLessons = Object.values(LESSONS_DATA).filter(l => {
+      if (world.id === 1) return l.id <= 5;
+      if (world.id === 2) return l.id > 5 && l.id <= 10;
+      if (world.id === 3) return l.id > 10 && l.id <= 15;
+      if (world.id === 4) return l.id > 15 && l.id <= 20;
+      if (world.id === 5) return l.id > 20 && l.id <= 25;
+      if (world.id === 6) return l.id > 25 && l.id <= 30;
+      // Mundo Secreto 7: requiere completada lección 30 y alta maestría en XP
+      if (world.id === 7) return l.id === 31 && appState.completedLessons.includes(30) && appState.xp >= 300;
+      return false;
+    });
+
+    // Si este mundo no tiene lecciones activas, no dibujar nada (banner o islas)
+    if (worldLessons.length === 0) return;
+
+    // 2. Agregar banner divisor de Mundo
     const worldHeaderHTML = `
       <div class="world-header world-${world.id}">
         <h3><span>🌍</span> ${world.name}</h3>
@@ -2162,16 +2248,6 @@ function renderLessonMap() {
       </div>
     `;
     container.innerHTML += worldHeaderHTML;
-
-    // 2. Filtrar lecciones del Mundo correspondiente
-    const worldLessons = Object.values(LESSONS_DATA).filter(l => {
-      if (world.id === 1) return l.id <= 5;
-      if (world.id === 2) return l.id > 5 && l.id <= 10;
-      if (world.id === 3) return l.id > 10 && l.id <= 15;
-      if (world.id === 4) return l.id > 15 && l.id <= 20;
-      if (world.id === 5) return l.id > 20 && l.id <= 25;
-      return l.id > 25;
-    });
 
     // 3. Dibujar islas de este mundo
     worldLessons.forEach((lesson) => {
@@ -2186,9 +2262,10 @@ function renderLessonMap() {
 
       const islandHTML = `
         <div class="lesson-island ${stateClass}" data-lesson-id="${lesson.id}">
-          <div class="island-floating-body" onclick="handleIslandClick(${lesson.id}, ${isUnlocked})">
-            <div class="island-badge">${lesson.badge}</div>
-            <div class="island-number">${lesson.id}</div>
+          <div class="island-floating-body" onclick="handleIslandClick(${lesson.id}, ${isUnlocked})" style="background:none; box-shadow:none;">
+            ${getIslandSvg(stateClass)}
+            <div class="island-badge" style="z-index: 10;">${lesson.badge}</div>
+            <div class="island-number" style="z-index: 10;">${lesson.id}</div>
           </div>
           <div class="island-info">
             <h3>Nivel ${lesson.id}: ${lesson.title}</h3>
@@ -3266,8 +3343,24 @@ function finishLesson() {
   updateNavStats();
 
   let speech = `"¡Rugido de victoria ciber-jaguar! Has completado el Nivel ${lesson.id}: ${lesson.title}. ¡Sigue así, vas a cambiar el mundo!"`;
+  let voiceSpeech = `¡Rugido de victoria ciber-jaguar! Has completado el Nivel ${lesson.id}. ¡Sigue así!`;
+  
+  // Lógica adaptativa inteligente para el Templo Secreto 31
+  if (appState.currentLessonId === 30 && appState.xp >= 300) {
+    speech = `"⚡ ¡ALERTA DE SUPERINTELIGENCIA! Has desbloqueado la Isla Secreta número 31: El Templo de la Superinteligencia 🌟 gracias a tu alta maestría de Científico. ¡Busca el templo de oro al final del mapa! 🐆🎓"`;
+    voiceSpeech = "¡Alerta máxima de superinteligencia! Tu maestría sobresaliente ha desbloqueado la Isla Secreta número 31 en el mapa selvático. ¡Has encontrado el Templo de la Superinteligencia! Busca la isla de oro al final del mapa. ¡Raaaawr!";
+    
+    // Confetti masivo adicional
+    setTimeout(spawnConfetti, 400);
+    setTimeout(spawnConfetti, 800);
+  } else if (appState.currentLessonId === 31) {
+    speech = `"🌟 ¡ENHORABUENA MAESTRO SUPREMO! Has completado el Templo Secreto de la Superinteligencia. Jagüi y tú son el equipo definitivo de la Inteligencia Artificial del futuro. 🐆🎓🤖"`;
+    voiceSpeech = "¡Enhorabuena, maestro supremo de la inteligencia artificial! Has completado el templo secreto. Tú y yo somos el equipo definitivo para cuidar y cambiar el futuro del planeta. ¡Rugido eterno de sabiduría!";
+  }
+  
   document.getElementById('victory-speech').innerText = speech;
   document.getElementById('reward-xp').innerText = `+${lesson.rewardXP} XP`;
+  speakText(voiceSpeech);
   
   document.getElementById('dialog-victory').showModal();
 }

@@ -696,17 +696,12 @@ input:checked + .slider::before { transform: translateX(22px); }
 .island-floating-body {
   width: 110px;
   height: 110px;
-  border-radius: 50%;
-  background: var(--island-bg, linear-gradient(135deg, #1E824C, #2ECC71));
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
-  box-shadow: 
-    0 12px 0 var(--island-shadow, #145A32),
-    0 18px 25px rgba(0, 0, 0, 0.4);
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.2s ease;
   animation: float 4s infinite ease-in-out;
 }
 
@@ -2513,7 +2508,7 @@ body.theme-light .store-card p {
   height: 90px;
   font-size: 3.5rem;
   filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4));
-  animation: float 4s infinite ease-in-out 0.2s;
+  animation: float 4s infinite ease-in-out 0.2s, accessoryBounceWelcome 0.6s steps(4) infinite;
 }
 
 .instructor-acc {
@@ -2542,6 +2537,22 @@ body.theme-light .store-card p {
   width: 38px;
   height: 38px;
   font-size: 0.85rem;
+  animation: accessoryBounceMini 0.6s steps(4) infinite;
+}
+
+/* Sincronización del rebote del accesorio al caminar Jagüi (Steps 4 a 0.6s) */
+@keyframes accessoryBounceWelcome {
+  0%, 100% { transform: translateY(0px); }
+  25% { transform: translateY(-4px); }
+  50% { transform: translateY(2px); }
+  75% { transform: translateY(-2px); }
+}
+
+@keyframes accessoryBounceMini {
+  0%, 100% { transform: translateY(0px); }
+  25% { transform: translateY(-1px); }
+  50% { transform: translateY(0.5px); }
+  75% { transform: translateY(-0.5px); }
 }
 
 /* --- Posicionamientos Milimétricos Específicos para Accesorios (10/10 Quirúrgico) --- */
