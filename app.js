@@ -93,29 +93,17 @@ const LESSONS_DATA = {
     rewardXP: 100,
     questions: [
       {
-        type: "choice",
-        question: "¿Cuál es el 'alimento' principal que la IA necesita para aprender?",
-        options: [
-          { text: "Electricidad de alto voltaje", isCorrect: false },
-          { text: "Datos y ejemplos (como fotos, palabras o sonidos)", isCorrect: true },
-          { text: "Tornillos y tuercas de acero", isCorrect: false }
+        type: "drag_classify",
+        question: "¡Minijuego de Datos! Clasifica los alimentos arrastrándolos a su cesta correcta para entrenar a Jagüi.",
+        speech: "¡Ayúdame a clasificar los datos! Arrastra la comida saludable a la cesta verde y la comida no saludable a la cesta roja.",
+        items: [
+          { id: "apple", emoji: "🍎", type: "healthy" },
+          { id: "banana", emoji: "🍌", type: "healthy" },
+          { id: "donut", emoji: "🍩", type: "junk" },
+          { id: "pizza", emoji: "🍕", type: "junk" }
         ],
-        hint: "Es la información que le damos para entrenar.",
-        speech: "¿Sabes cuál es el combustible de aprendizaje de una IA?",
-        successDesc: "¡Súper! Esos ejemplos se llaman 'Datos de Entrenamiento' y le sirven a la IA para descubrir patrones.",
-        failDesc: "¡Nop! Los tornillos arman al robot y la luz lo enciende, pero la IA necesita datos para aprender."
-      },
-      {
-        type: "builder",
-        question: "Completa la frase sobre los datos:",
-        sentence: "Para entrenar a una IA necesitamos darle muchos {blank} de excelente {blank}.",
-        blanksCount: 2,
-        wordBank: ["ejemplos", "calidad", "cables", "dulces"],
-        correctAnswers: ["ejemplos", "calidad"],
-        hint: "Piensa en buenos datos.",
-        speech: "¡Ordenemos la regla de los datos!",
-        successDesc: "¡Genial! Si los ejemplos (datos) son de buena calidad, la IA aprenderá rápido y de forma correcta.",
-        failDesc: "¡Casi! Necesitamos darle muchos 'ejemplos' de excelente 'calidad'."
+        successDesc: "¡Impecable! Los datos de entrenamiento están clasificados y listos para alimentar a la IA.",
+        failDesc: "¡Uy! Acomoda todos los alimentos en sus cestas correctas para que la IA no aprenda mal."
       }
     ]
   },
@@ -303,30 +291,11 @@ const LESSONS_DATA = {
     rewardXP: 100,
     questions: [
       {
-        type: "choice",
-        question: "¿Cómo aprende una IA a ganar videojuegos mediante el 'Aprendizaje por Refuerzo'?",
-        options: [
-          { text: "Leyendo el manual de instrucciones", isCorrect: false },
-          { text: "Probando acciones y recibiendo 'premios' (puntos) si lo hace bien, o 'castigos' si falla", isCorrect: true },
-          { text: "Viendo comerciales en YouTube", isCorrect: false }
-        ],
-        hint: "Es muy similar a cómo entrenamos a una mascota dándole premios.",
-        speech: "¿Cómo aprende una IA a jugar Mario Bros sola?",
-        successDesc: "¡Genial! Juega millones de veces. Si avanza suma puntos (refuerzo positivo), si cae al vacío pierde (negativo). ¡Así se vuelve invencible!",
-        failDesc: "¡No! La IA de videojuegos juega por prueba y error, recibiendo recompensas virtuales cuando logra objetivos."
-      },
-      {
-        type: "boolean",
-        question: "¿Entrenar a un perrito dándole una galleta cuando da la pata es igual al Aprendizaje por Refuerzo?",
-        options: [
-          { text: "Sí, es el mismo concepto de premio-reacción", value: true },
-          { text: "No, los perritos no usan algoritmos", value: false }
-        ],
-        correctValue: true,
-        hint: "Ambos aprenden ajustando su conducta para obtener la galleta (premio).",
-        speech: "¿Asocias el truco del perrito con este algoritmo?",
-        successDesc: "¡Exacto! El perrito asocia 'dar la pata' con 'galleta'. La IA asocia 'esquivar obstáculo' con 'ganar puntos'.",
-        failDesc: "¡Cuidado! Aunque el perrito no use código de PC, la idea de aprender mediante recompensas es exactamente la misma."
+        type: "reinforcement",
+        question: "¡Minijuego de Refuerzo! Entrena a Jagüi dándole galletas 🍪 justo después de saltar para superar los obstáculos.",
+        speech: "¡Es hora de entrenar por refuerzo! Presiona el botón de Galleta cuando yo esquive un obstáculo para enseñarme qué hacer.",
+        successDesc: "¡Maravilloso! Jagüi ha aprendido por refuerzo positivo a saltar todos los obstáculos de forma perfecta.",
+        failDesc: "¡Cuidado! Dale la galleta justo cuando salte bien para reforzar la acción correcta."
       }
     ]
   },
@@ -375,30 +344,11 @@ const LESSONS_DATA = {
     rewardXP: 100,
     questions: [
       {
-        type: "choice",
-        question: "¿Qué hace una 'Neurona Artificial' dentro de la computadora?",
-        options: [
-          { text: "Recibe datos, les aplica un cálculo matemático simple y envía una señal", isCorrect: true },
-          { text: "Almacena fotos en una carpeta secreta", isCorrect: false },
-          { text: "Mueve los cables físicos de la PC", isCorrect: false }
-        ],
-        hint: "Es una pequeña función matemática que procesa una entrada y da una salida.",
-        speech: "¡Llegamos al Mundo 3! Hablemos de la neurona artificial.",
-        successDesc: "¡Fabuloso! Recibe entradas (números), los multiplica por un 'peso' y, si el resultado supera un límite, envía la señal al siguiente nodo.",
-        failDesc: "¡Nop! Es un nodo de código que hace operaciones matemáticas sencillas para filtrar y pasar datos."
-      },
-      {
-        type: "boolean",
-        question: "¿Las neuronas artificiales tienen 'pesos' que deciden qué información es más importante?",
-        options: [
-          { text: "Sí, los pesos ajustan la importancia de los datos", value: true },
-          { text: "No, todos los datos pesan exactamente lo mismo", value: false }
-        ],
-        correctValue: true,
-        hint: "Si buscas saber si una fruta es manzana, el 'color rojo' tiene más peso que el 'tamaño'.",
-        speech: "¿Existen los pesos en la inteligencia artificial?",
-        successDesc: "¡Súper! Un peso alto significa que ese dato específico es muy importante para que la neurona tome una decisión.",
-        failDesc: "¡Nop! Los pesos son fundamentales. Ayudan a que la neurona filtre qué datos valen la pena y cuáles no."
+        type: "neural_connect",
+        question: "¡Minijuego Neuronal! Haz clic en los cables grises para conectar los impulsos eléctricos entre la Entrada y la Salida.",
+        speech: "¡Conecta las neuronas! Pulsa los cables rotos para activar la red neuronal y hacer que el robot salude.",
+        successDesc: "¡Espectacular! La energía digital fluye por la red neuronal y activa la salida con éxito.",
+        failDesc: "¡Oh! Conecta todos los cables para encender el camino de luz eléctrica."
       }
     ]
   },
@@ -551,30 +501,11 @@ const LESSONS_DATA = {
     rewardXP: 100,
     questions: [
       {
-        type: "choice",
-        question: "¿Qué es la 'Visión por Computadora'?",
-        options: [
-          { text: "Ponerle lentes a la pantalla de la PC", isCorrect: false },
-          { text: "La tecnología que permite a la IA entender fotos y videos en tiempo real", isCorrect: true },
-          { text: "Un videojuego para jaguares", isCorrect: false }
-        ],
-        hint: "Permite clasificar objetos o rastrear caras con cámaras.",
-        speech: "¡Bienvenidos al Mundo 4! ¿Qué es la visión por computadora?",
-        successDesc: "¡Correcto! Permite que la IA reconozca semáforos, animales, personas y gestos analizando los píxeles de una cámara.",
-        failDesc: "¡Nop! Es la rama que enseña a las máquinas a 'ver' y comprender imágenes digitales."
-      },
-      {
-        type: "boolean",
-        question: "¿Para la computadora, una foto es en realidad una cuadrícula gigante de números (píxeles)?",
-        options: [
-          { text: "Sí, las máquinas solo leen números de colores", value: true },
-          { text: "No, las máquinas ven colores e imágenes directo", value: false }
-        ],
-        correctValue: true,
-        hint: "Las pantallas usan valores RGB (Rojo, Verde, Azul) de 0 a 255.",
-        speech: "¿Cómo ve una foto una computadora por dentro?",
-        successDesc: "¡Fantástico! La IA procesa matrices de números que indican el color de cada diminuto píxel.",
-        failDesc: "¡Nop! Las computadoras no tienen ojos biológicos. Traducen todo a matrices de números de colores RGB."
+        type: "bounding_box",
+        question: "¡Minijuego de Visión! Dibuja una caja delimitadora (rectángulo) arrastrando el ratón sobre la cabeza del jaguar.",
+        speech: "¡Es hora de la visión artificial! Usa tu dedo o ratón para dibujar un rectángulo justo sobre mi cabeza y entrenar el detector de rostros.",
+        successDesc: "¡Increíble! La visión artificial ha detectado el rostro del jaguar de forma 100% precisa.",
+        failDesc: "¡Uy! Asegúrate de dibujar la caja delimitadora exactamente cubriendo la cara de Jagüi."
       }
     ]
   },
@@ -1101,16 +1032,422 @@ let appState = {
   healthyBin: [],
   junkBin: [],
   mlActiveItem: null,
-  isMLTrained: false
+  isMLTrained: false,
+
+  // Tienda IA
+  inventory: [],
+  equippedAccessory: null
 };
+
+// --- CONFIGURACIÓN DE FIREBASE (CLUB DE CIENTÍFICOS JAGÜI) ---
+const firebaseConfig = {
+  projectId: "jagui-copiloto-ia",
+  appId: "1:1053611529364:web:66bbf4a1645c5a360e1081",
+  storageBucket: "jagui-copiloto-ia.firebasestorage.app",
+  apiKey: "AIzaSyAaZdfKrznyC52w6vz6L4W-9PTp8gx6bOI",
+  authDomain: "jagui-copiloto-ia.firebaseapp.com",
+  messagingSenderId: "1053611529364"
+};
+
+let db = null;
+let auth = null;
+let isFirebaseConnected = false;
+
+function initFirebase() {
+  try {
+    if (typeof firebase !== 'undefined') {
+      firebase.initializeApp(firebaseConfig);
+      db = firebase.firestore();
+      auth = firebase.auth();
+      isFirebaseConnected = true;
+      console.log("Firebase inicializado con éxito! 🐆☁️");
+      
+      // Escuchar cambios de estado de autenticación
+      auth.onAuthStateChanged(user => {
+        if (user) {
+          console.log("Usuario autenticado:", user.email);
+          appState.username = user.displayName || "Científico/a";
+          loadProfileFromFirebase(user.uid);
+        } else {
+          console.log("Modo Invitado activo.");
+        }
+      });
+    } else {
+      console.warn("Librerías de Firebase no detectadas. Degradando a almacenamiento local.");
+    }
+  } catch (e) {
+    console.error("Fallo al conectar con Firebase:", e);
+  }
+}
+
+// --- LOGROS Y ACCESOS A LA NUBE ---
+function loadProfileFromFirebase(uid) {
+  if (!db) return;
+  db.collection("users").doc(uid).get()
+    .then(doc => {
+      if (doc.exists) {
+        const data = doc.data();
+        appState.xp = data.xp || 0;
+        appState.streak = data.streak || 1;
+        appState.completedLessons = data.completedLessons || [];
+        appState.inventory = data.inventory || [];
+        appState.equippedAccessory = data.equippedAccessory || null;
+        
+        // Guardar localmente
+        saveLocalProgress();
+        updateHeaderStats();
+        applyAccessory();
+        console.log("Perfil sincronizado desde la nube Firebase! ⭐");
+      } else {
+        // Guardar perfil nuevo en Firestore
+        saveProfileToFirebase(uid);
+      }
+    })
+    .catch(err => console.warn("Error al cargar perfil de Firestore:", err));
+}
+
+function saveProfileToFirebase(uid) {
+  if (!db) return;
+  db.collection("users").doc(uid).set({
+    username: appState.username,
+    xp: appState.xp,
+    streak: appState.streak,
+    completedLessons: appState.completedLessons,
+    inventory: appState.inventory,
+    equippedAccessory: appState.equippedAccessory,
+    lastActiveDate: new Date().toISOString()
+  }, { merge: true })
+  .then(() => console.log("Progreso respaldado en Firebase! ☁️"))
+  .catch(err => console.warn("Error al respaldar en Firestore:", err));
+}
+
+// --- ACCIONES DE AUTENTICACIÓN ---
+function openAuthDialog() {
+  playAudioSynth('click');
+  document.getElementById('dialog-auth').showModal();
+}
+
+function closeAuthDialog(isGuest = false) {
+  playAudioSynth('click');
+  document.getElementById('dialog-auth').close();
+  if (isGuest) {
+    appState.username = "Invitado/a 🐆";
+    document.getElementById('nav-username-display').innerText = "Invitado/a";
+  }
+}
+
+function toggleAuthForm(form) {
+  playAudioSynth('click');
+  const loginBox = document.getElementById('auth-login-box');
+  const registerBox = document.getElementById('auth-register-box');
+  if (form === 'register') {
+    loginBox.classList.add('hidden');
+    registerBox.classList.remove('hidden');
+  } else {
+    loginBox.classList.remove('hidden');
+    registerBox.classList.add('hidden');
+  }
+}
+
+function loginWithFirebase() {
+  playAudioSynth('click');
+  const email = document.getElementById('auth-email-login').value.trim();
+  const pass = document.getElementById('auth-pass-login').value.trim();
+  const errorMsg = document.getElementById('login-error-msg');
+  
+  if (!email || !pass) {
+    errorMsg.innerText = "¡Por favor escribe tu correo y contraseña! 🔑";
+    return;
+  }
+  
+  if (!auth) {
+    errorMsg.innerText = "Error: El servidor de Firebase no está en línea.";
+    return;
+  }
+  
+  auth.signInWithEmailAndPassword(email, pass)
+    .then(result => {
+      errorMsg.innerText = "";
+      playAudioSynth('correct');
+      closeAuthDialog();
+      triggerConfetti();
+    })
+    .catch(err => {
+      console.warn("Fallo de inicio de sesión:", err);
+      errorMsg.innerText = "¡Oh no! Contraseña incorrecta o correo no registrado.";
+      playAudioSynth('incorrect');
+    });
+}
+
+function registerWithFirebase() {
+  playAudioSynth('click');
+  const name = document.getElementById('auth-name-register').value.trim();
+  const email = document.getElementById('auth-email-register').value.trim();
+  const pass = document.getElementById('auth-pass-register').value.trim();
+  const errorMsg = document.getElementById('register-error-msg');
+  
+  if (!name || !email || !pass) {
+    errorMsg.innerText = "¡Escribe tu nombre, correo y contraseña! 📝";
+    return;
+  }
+  
+  if (pass.length < 6) {
+    errorMsg.innerText = "¡Tu contraseña secreta debe medir al menos 6 letras! 🔒";
+    return;
+  }
+  
+  if (!auth) {
+    errorMsg.innerText = "Error: El servidor de Firebase no está en línea.";
+    return;
+  }
+  
+  auth.createUserWithEmailAndPassword(email, pass)
+    .then(result => {
+      result.user.updateProfile({ displayName: name })
+        .then(() => {
+          appState.username = name;
+          document.getElementById('nav-username-display').innerText = name;
+          saveProfileToFirebase(result.user.uid);
+          errorMsg.innerText = "";
+          playAudioSynth('correct');
+          closeAuthDialog();
+          triggerConfetti();
+        });
+    })
+    .catch(err => {
+      console.warn("Fallo de registro:", err);
+      errorMsg.innerText = "¡Uy! Ese correo ya está en uso o no es válido.";
+      playAudioSynth('incorrect');
+    });
+}
+
 
 // --- CONFIGURACIÓN DE AUDIO SINTETIZADO ---
 let audioCtx = null;
+let bgMusicInterval = null;
+let isMusicPlaying = false;
+let musicNodes = [];
 
 function initAudio() {
   if (!audioCtx) {
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   }
+}
+
+function playBackgroundMusic() {
+  if (isMusicPlaying) return;
+  initAudio();
+  if (audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+  isMusicPlaying = true;
+  
+  // Melodía cíclica alegre de 16 notas pentatónicas (C4, E4, G4, A4, C5...)
+  const melody = [
+    261.63, 329.63, 392.00, 440.00, 523.25, 440.00, 392.00, 329.63,
+    293.66, 392.00, 493.88, 587.33, 493.88, 392.00, 293.66, 261.63
+  ];
+  
+  let step = 0;
+  const tempo = 350; // ms por nota (tempo tranquilo)
+  
+  bgMusicInterval = setInterval(() => {
+    try {
+      if (audioCtx.state === 'suspended') return;
+      const now = audioCtx.currentTime;
+      
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      
+      osc.type = 'sine'; // Onda suave
+      osc.frequency.setValueAtTime(melody[step], now);
+      
+      // Volumen muy bajito para que sea música de fondo relajante
+      gain.gain.setValueAtTime(0.015, now);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.32);
+      
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      
+      osc.start(now);
+      osc.stop(now + 0.35);
+      
+      musicNodes.push(osc);
+      if (musicNodes.length > 20) {
+        musicNodes.shift();
+      }
+      
+      step = (step + 1) % melody.length;
+    } catch (e) {
+      console.warn("Música generativa detenida:", e);
+    }
+  }, tempo);
+}
+
+function stopBackgroundMusic() {
+  isMusicPlaying = false;
+  if (bgMusicInterval) {
+    clearInterval(bgMusicInterval);
+    bgMusicInterval = null;
+  }
+  musicNodes.forEach(node => {
+    try { node.stop(); } catch (e) {}
+  });
+  musicNodes = [];
+}
+
+function toggleMusic() {
+  const btnText = document.getElementById('music-toggle-text');
+  if (isMusicPlaying) {
+    stopBackgroundMusic();
+    if (btnText) btnText.innerText = "Música: OFF";
+    localStorage.setItem('jagui_music', 'off');
+  } else {
+    playBackgroundMusic();
+    if (btnText) btnText.innerText = "Música: ON";
+    localStorage.setItem('jagui_music', 'on');
+  }
+}
+
+// --- INTELEGENCIA ARTIFICIAL NATIVA (GEMINI API CHATBOT) ---
+function saveGeminiApiKey() {
+  const key = document.getElementById('gemini-api-key-input').value.trim();
+  const status = document.getElementById('api-key-status');
+  if (key) {
+    localStorage.setItem('gemini_api_key', key);
+    if (status) status.innerText = "¡API Key conectada con éxito! 🚀";
+  } else {
+    localStorage.removeItem('gemini_api_key');
+    if (status) status.innerText = "Usando simulador local 🐆";
+  }
+}
+
+function handleChatKeydown(event) {
+  if (event.key === 'Enter') {
+    sendChatMessage();
+  }
+}
+
+function sendChatMessage() {
+  const input = document.getElementById('chat-user-input');
+  const text = input.value.trim();
+  if (!text) return;
+  
+  input.value = ""; // Limpiar
+  playAudioSynth('click');
+  
+  // Agregar mensaje del usuario en pantalla
+  appendChatMessage("Científico/a", text, "user-msg");
+  
+  // Animación de Jagüi pensando
+  setMascotExpression('jagui-welcome', 'thinking');
+  appendChatMessage("Jagüi", "Mmm... ¡Déjame pensarlo! Raaaawr... 🧠⚡", "jagui-msg", true);
+  
+  const apiKey = localStorage.getItem('gemini_api_key');
+  
+  if (apiKey) {
+    callGeminiAPI(text, apiKey);
+  } else {
+    // Simulador inteligente de Jagüi con respuestas divertidas para niños
+    setTimeout(() => {
+      let reply = "";
+      const lower = text.toLowerCase();
+      
+      if (lower.includes("hola") || lower.includes("quien eres") || lower.includes("saludo")) {
+        reply = "¡Hola! ¡Raaaawr! Soy Jagüi, tu copiloto tecnológico. Estoy aquí para enseñarte cómo las computadoras pueden aprender como jaguares salvajes. ¿Qué quieres descubrir hoy? 🐆";
+      } else if (lower.includes("red") || lower.includes("neuronal") || lower.includes("cerebro")) {
+        reply = "¡Wow! Una red neuronal es como una telaraña digital dentro de la computadora. Imita las conexiones de tu propio cerebro para clasificar fotos o voces. ¡Cada bolita es una neurona de código! 🕸️🧠";
+      } else if (lower.includes("machine learning") || lower.includes("aprendizaje") || lower.includes("entrenar")) {
+        reply = "El Aprendizaje Automático o Machine Learning es darle superpoderes a la computadora. En lugar de escribir reglas aburridas, le damos miles de fotos y ella aprende sola a diferenciar gatos de perros. ¡Es lo que hacemos en mi Laboratorio! 🍏🍩";
+      } else if (lower.includes("vision") || lower.includes("camara") || lower.includes("ver")) {
+        reply = "¡La visión por computadora es increíble! Permite que un robot o auto autónomo 'vea' el mundo usando cámaras. Convierte las fotos en una cuadrícula gigante de números de colores (píxeles) para detectar obstáculos. 📷🚗";
+      } else if (lower.includes("gemini") || lower.includes("chat") || lower.includes("ia")) {
+        reply = "¡La Inteligencia Artificial es una gran herramienta hecha con matemáticas y código! Nos ayuda a resolver problemas gigantes, pero recuerda: ¡las máquinas no tienen sentimientos reales ni creatividad como tú! ⚡🧑‍🔬";
+      } else {
+        reply = "¡Qué excelente pregunta! Raaaawr. Para responder preguntas tan avanzadas y platicar de cualquier tema del universo tecnológico conmigo, ¡pídele a tus papás que coloquen mi API Key secreta de Gemini en el menú de abajo! Mientras tanto, ¡sigamos jugando en mi Ruta de Aprendizaje! 🌟🔑";
+      }
+      
+      removeThinkingMessage();
+      appendChatMessage("Jagüi", reply, "jagui-msg");
+      setMascotExpression('jagui-welcome', 'happy');
+      speakText(reply);
+    }, 1500);
+  }
+}
+
+function appendChatMessage(username, text, className, isThinking = false) {
+  const container = document.getElementById('chat-messages');
+  if (!container) return;
+  
+  if (isThinking) {
+    const thinkingMsg = document.createElement('div');
+    thinkingMsg.id = "chat-thinking-msg";
+    thinkingMsg.className = `chat-message ${className}`;
+    thinkingMsg.innerHTML = `
+      <div class="msg-avatar">🐆</div>
+      <div class="msg-content-wrapper">
+        <span class="msg-username">${username}</span>
+        <p class="msg-text" style="font-style: italic; color: var(--text-muted);">${text}</p>
+      </div>
+    `;
+    container.appendChild(thinkingMsg);
+  } else {
+    const msg = document.createElement('div');
+    msg.className = `chat-message ${className}`;
+    msg.innerHTML = `
+      <div class="msg-avatar">${className === 'user-msg' ? '🧑‍🔬' : '🐆'}</div>
+      <div class="msg-content-wrapper">
+        <span class="msg-username">${username}</span>
+        <p class="msg-text">${text}</p>
+      </div>
+    `;
+    container.appendChild(msg);
+  }
+  
+  container.scrollTop = container.scrollHeight;
+}
+
+function removeThinkingMessage() {
+  const thinking = document.getElementById('chat-thinking-msg');
+  if (thinking) thinking.remove();
+}
+
+function callGeminiAPI(prompt, apiKey) {
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+  
+  const systemInstruction = "Eres Jagüi, el adorable jaguar tecnológico copiloto de Inteligencia Artificial para niños. Habla siempre con un lenguaje sumamente sencillo, lúdico, infantil, amigable y muy motivador. Utiliza emojis con frecuencia, haz analogías con la selva, los animales y los árboles. Tu rugido característico es '¡Raaaawr!'. Responde de forma breve y concisa (máximo 3 frases) para que sea fácil y divertido de leer para niños.";
+  
+  const payload = {
+    contents: [{ parts: [{ text: prompt }] }],
+    systemInstruction: { parts: [{ text: systemInstruction }] }
+  };
+  
+  fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+  .then(res => res.json())
+  .then(data => {
+    removeThinkingMessage();
+    let reply = "¡Ups! Raaaawr. Algo falló en mi red neuronal espacial. ¡Vuelve a intentarlo!";
+    
+    if (data.candidates && data.candidates[0].content && data.candidates[0].content.parts) {
+      reply = data.candidates[0].content.parts[0].text;
+    }
+    
+    appendChatMessage("Jagüi", reply, "jagui-msg");
+    setMascotExpression('jagui-welcome', 'happy');
+    speakText(reply);
+  })
+  .catch(err => {
+    console.error("Error calling Gemini API:", err);
+    removeThinkingMessage();
+    const reply = "¡Oh no! No pude conectar con mi cerebro en la nube Gemini. ¿Tienes internet activo en la selva? 📡🌳";
+    appendChatMessage("Jagüi", reply, "jagui-msg");
+    setMascotExpression('jagui-welcome', 'sad');
+    speakText(reply);
+  });
 }
 
 function playAudioSynth(type) {
@@ -1251,10 +1588,6 @@ class ConfettiParticle {
     this.y += this.speedY;
     this.x += this.speedX;
     this.rotation += this.rotationSpeed;
-    if (this.y > canvas.height) {
-      this.y = -20;
-      this.x = Math.random() * canvas.width;
-    }
   }
   draw() {
     ctx.save();
@@ -1266,29 +1599,32 @@ class ConfettiParticle {
   }
 }
 
-function spawnConfetti() {
+function animateConfetti() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  let stillActive = false;
+  confettiParticles.forEach(p => {
+    p.update();
+    p.draw();
+    if (p.y < canvas.height) stillActive = true;
+  });
+  if (stillActive) {
+    confettiAnimationId = requestAnimationFrame(animateConfetti);
+  } else {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    cancelAnimationFrame(confettiAnimationId);
+    confettiAnimationId = null;
+  }
+}
+
+function triggerConfetti() {
+  if (confettiAnimationId) {
+    cancelAnimationFrame(confettiAnimationId);
+  }
   confettiParticles = [];
   for (let i = 0; i < 100; i++) {
     confettiParticles.push(new ConfettiParticle());
   }
-  
-  if (confettiAnimationId) cancelAnimationFrame(confettiAnimationId);
   animateConfetti();
-  
-  setTimeout(() => {
-    cancelAnimationFrame(confettiAnimationId);
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    confettiAnimationId = null;
-  }, 5000);
-}
-
-function animateConfetti() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  confettiParticles.forEach((p) => {
-    p.update();
-    p.draw();
-  });
-  confettiAnimationId = requestAnimationFrame(animateConfetti);
 }
 
 // --- NAVEGACIÓN Y CAMBIO DE PANTALLAS CON VIEW TRANSITIONS API ---
@@ -1317,6 +1653,10 @@ function switchScreen(screenId) {
       const btn = document.getElementById('btn-nav-profile');
       if (btn) btn.classList.add('active');
       renderProfileView();
+    } else if (screenId === 'store-screen') {
+      const btn = document.getElementById('btn-nav-store');
+      if (btn) btn.classList.add('active');
+      renderStoreView();
     }
     
     document.querySelector('.main-content').scrollTop = 0;
@@ -1347,6 +1687,97 @@ function toggleTheme() {
   }
 }
 
+// --- TIENDA IA DE ACCESORIOS PARA JAGÜI ---
+const STORE_ITEMS = [
+  { id: "glasses", name: "Gafas Futuristas", emoji: "🕶️", desc: "¡Jagüi las usa para analizar píxeles y patrones a súper velocidad!", cost: 100 },
+  { id: "hat", name: "Gorra de Explorador", emoji: "🤠", desc: "¡Perfecta para adentrarse en la selva profunda de los macrodatos (Big Data)!", cost: 200 },
+  { id: "headphones", name: "Auriculares Gamer", emoji: "🎧", desc: "¡Para escuchar sinapsis artificiales y música lo-fi de IA!", cost: 300 }
+];
+
+function applyAccessory() {
+  const equipped = appState.equippedAccessory;
+  const item = STORE_ITEMS.find(i => i.id === equipped);
+  const emojiStr = item ? item.emoji : "";
+  
+  const wOverlay = document.getElementById('welcome-jagui-accessory');
+  const iOverlay = document.getElementById('instructor-jagui-accessory');
+  const lOverlay = document.getElementById('lab-jagui-accessory');
+  
+  if (wOverlay) wOverlay.innerText = emojiStr;
+  if (iOverlay) iOverlay.innerText = emojiStr;
+  if (lOverlay) lOverlay.innerText = emojiStr;
+}
+
+function renderStoreView() {
+  document.getElementById('store-xp-display').innerText = `${appState.xp} XP`;
+  
+  const container = document.getElementById('store-items-container');
+  container.innerHTML = ""; // Limpiar
+  
+  STORE_ITEMS.forEach(item => {
+    const isOwned = appState.inventory.includes(item.id);
+    const isEquipped = appState.equippedAccessory === item.id;
+    
+    let btnHTML = "";
+    if (!isOwned) {
+      const canAfford = appState.xp >= item.cost;
+      btnHTML = `
+        <button class="btn-3d btn-primary btn-sm" onclick="buyStoreItem('${item.id}')" ${canAfford ? "" : "disabled"}>
+          <span>Comprar 💰</span>
+        </button>
+      `;
+    } else {
+      if (isEquipped) {
+        btnHTML = `
+          <button class="btn-3d btn-equipped btn-sm" onclick="equipStoreItem(null)">
+            <span>Equipado 🤩</span>
+          </button>
+        `;
+      } else {
+        btnHTML = `
+          <button class="btn-3d btn-secondary btn-sm" onclick="equipStoreItem('${item.id}')">
+            <span>Equipar 🤠</span>
+          </button>
+        `;
+      }
+    }
+    
+    container.innerHTML += `
+      <div class="store-card glass">
+        <div class="store-item-emoji">${item.emoji}</div>
+        <h3>${item.name}</h3>
+        <p>${item.desc}</p>
+        <div class="store-card-footer">
+          <span class="item-cost">${item.cost} XP</span>
+          ${btnHTML}
+        </div>
+      </div>
+    `;
+  });
+}
+
+function buyStoreItem(itemId) {
+  const item = STORE_ITEMS.find(i => i.id === itemId);
+  if (!item || appState.inventory.includes(itemId) || appState.xp < item.cost) return;
+  
+  appState.xp -= item.cost;
+  appState.inventory.push(itemId);
+  playAudioSynth('correct');
+  
+  saveToLocalStorage();
+  updateNavStats();
+  renderStoreView();
+}
+
+function equipStoreItem(itemId) {
+  appState.equippedAccessory = itemId;
+  playAudioSynth('click');
+  
+  applyAccessory();
+  saveToLocalStorage();
+  renderStoreView();
+}
+
 // --- PERSISTENCIA (LOCAL STORAGE) ---
 function saveToLocalStorage() {
   localStorage.setItem('jagui_game_state', JSON.stringify({
@@ -1356,7 +1787,9 @@ function saveToLocalStorage() {
     streak: appState.streak,
     lastPlayedDate: appState.lastPlayedDate,
     username: appState.username,
-    achievements: appState.achievements
+    achievements: appState.achievements,
+    inventory: appState.inventory,
+    equippedAccessory: appState.equippedAccessory
   }));
 }
 
@@ -1372,10 +1805,13 @@ function loadFromLocalStorage() {
       appState.lastPlayedDate = parsed.lastPlayedDate || null;
       appState.username = parsed.username || "Científico/a de IA";
       appState.achievements = parsed.achievements || JSON.parse(JSON.stringify(ACHIEVEMENTS_DATA));
+      appState.inventory = parsed.inventory || [];
+      appState.equippedAccessory = parsed.equippedAccessory || null;
       
       document.getElementById('btn-resume-game').classList.remove('hidden');
       updateNavStats();
       calculateStreak();
+      applyAccessory(); // Aplicar el accesorio al iniciar
     } catch (e) {
       console.error("Error al cargar estado:", e);
     }
@@ -1419,29 +1855,38 @@ function updateNavStats() {
   }
 }
 
-// --- BIENVENIDA Y INICIALIZACIÓN ---
-window.addEventListener('DOMContentLoaded', () => {
-  // Registrar el Service Worker para soporte sin conexión PWA
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./service-worker.js').then((reg) => {
-        console.log('Service Worker registrado con éxito en scope:', reg.scope);
-      }).catch((err) => {
-        console.warn('Error al registrar Service Worker:', err);
-      });
-    });
-  }
-
-  // Cargar el tema preferido del localStorage
-  const savedTheme = localStorage.getItem('jagui_theme');
-  if (savedTheme === 'light') {
-    document.body.classList.add('theme-light');
-    const toggleBtn = document.getElementById('theme-toggle-text');
-    if (toggleBtn) toggleBtn.innerText = "Tema Noche";
-  }
-
+document.addEventListener('DOMContentLoaded', () => {
+  initFirebase();
   loadFromLocalStorage();
   
+  // Sincronizar el username si ya está autenticado en Firebase
+  if (auth && auth.currentUser) {
+    appState.username = auth.currentUser.displayName || "Científico/a";
+    document.getElementById('nav-username-display').innerText = appState.username;
+  }
+  
+  // Arrancar música de fondo si estaba activa
+  const musicPref = localStorage.getItem('jagui_music');
+  const btnMusic = document.getElementById('music-toggle-text');
+  if (musicPref === 'on') {
+    playBackgroundMusic();
+    if (btnMusic) btnMusic.innerText = 'Música: ON';
+  } else {
+    if (btnMusic) btnMusic.innerText = 'Música: OFF';
+  }
+
+  // Cargar tema
+  const themePref = localStorage.getItem('jagui_theme');
+  const body = document.body;
+  const btnTheme = document.getElementById('theme-toggle-text');
+  if (themePref === 'light') {
+    body.classList.add('theme-light');
+    if (btnTheme) btnTheme.innerText = "Tema Noche";
+  } else {
+    body.classList.remove('theme-light');
+    if (btnTheme) btnTheme.innerText = "Tema Día";
+  }
+
   // Agregar saludito por voz inicial
   setTimeout(() => {
     speakText("¡Hola! Soy Jagüi, tu primer copiloto. ¿Listo para el viaje de 30 niveles para aprender Inteligencia Artificial? ¡Raaaawr!");
@@ -1522,7 +1967,67 @@ function renderLessonMap() {
       container.innerHTML += islandHTML;
     });
   });
+  
+  // Calcular y dibujar la línea de camino dinámica y fluida
+  setTimeout(drawDynamicMapPath, 100);
 }
+
+function drawDynamicMapPath() {
+  const svg = document.querySelector('.map-connector-line');
+  const container = document.querySelector('.map-container');
+  const islands = document.querySelectorAll('.lesson-island');
+  
+  if (!svg || !container || !islands.length) return;
+  
+  const animatedPath = document.querySelector('.animated-path-flow');
+  const staticPath = svg.querySelector('path:not(.animated-path-flow)');
+  
+  // Medir y ajustar el SVG a píxeles 1:1 para evitar estiramientos desproporcionados
+  const containerRect = container.getBoundingClientRect();
+  svg.setAttribute('width', containerRect.width);
+  svg.setAttribute('height', containerRect.height);
+  svg.removeAttribute('viewBox');
+  
+  let pathD = "";
+  
+  islands.forEach((island, idx) => {
+    const body = island.querySelector('.island-floating-body');
+    if (!body) return;
+    const rect = body.getBoundingClientRect();
+    
+    // Coordenadas del centro de cada isla relativo al contenedor
+    const x = rect.left - containerRect.left + rect.width / 2;
+    const y = rect.top - containerRect.top + rect.height / 2;
+    
+    if (idx === 0) {
+      pathD += `M ${x},${y}`;
+    } else {
+      const prevBody = islands[idx - 1].querySelector('.island-floating-body');
+      if (!prevBody) return;
+      const prevRect = prevBody.getBoundingClientRect();
+      const prevX = prevRect.left - containerRect.left + prevRect.width / 2;
+      const prevY = prevRect.top - containerRect.top + prevRect.height / 2;
+      
+      // Curva Bezier cúbica súper suave (serpenteante)
+      const cpY1 = prevY + (y - prevY) / 3;
+      const cpY2 = prevY + (y - prevY) * 2 / 3;
+      pathD += ` C ${prevX},${cpY1} ${x},${cpY2} ${x},${y}`;
+    }
+  });
+  
+  if (pathD) {
+    staticPath.setAttribute('d', pathD);
+    if (animatedPath) animatedPath.setAttribute('d', pathD);
+  }
+}
+
+// Escuchar cambios de tamaño para re-ajustar el camino de las islas dinámicamente
+window.addEventListener('resize', () => {
+  const mapScreen = document.getElementById('map-screen');
+  if (mapScreen && mapScreen.classList.contains('active')) {
+    drawDynamicMapPath();
+  }
+});
 
 function handleIslandClick(lessonId, isUnlocked) {
   if (isUnlocked) {
@@ -1645,6 +2150,127 @@ function renderQuestion() {
     `;
     area.innerHTML = sentenceHTML;
   }
+  
+  else if (question.type === 'drag_classify') {
+    let html = `
+      <div class="minigame-container">
+        <span class="minigame-title">🐾 ¡Minijuego: Ordena la Comida! 🐾</span>
+        <div class="drag-classify-board">
+          <div class="draggable-items-pool" id="drag-items-pool">
+    `;
+    question.items.forEach((item, idx) => {
+      html += `
+        <div class="draggable-item" id="drag-item-${item.id}" draggable="true" ondragstart="handleMinigameDragStart(event, '${item.id}')" style="touch-action: none;">
+          <span>${item.emoji}</span>
+        </div>
+      `;
+    });
+    html += `
+          </div>
+          <div class="baskets-grid">
+            <div class="basket-bin healthy-basket" id="basket-healthy" ondragover="allowMinigameDrop(event)" ondrop="handleMinigameDrop(event, 'healthy')">
+              <div class="basket-header">🍏 Saludable</div>
+              <div class="basket-items" id="basket-healthy-items"></div>
+            </div>
+            <div class="basket-bin junk-basket" id="basket-junk" ondragover="allowMinigameDrop(event)" ondrop="handleMinigameDrop(event, 'junk')">
+              <div class="basket-header">🍩 No Saludable</div>
+              <div class="basket-items" id="basket-junk-items"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    area.innerHTML = html;
+    initDragMinigameTouchSupport(); // Soporte para toques en celulares
+  }
+  
+  else if (question.type === 'bounding_box') {
+    let html = `
+      <div class="minigame-container">
+        <span class="minigame-title">📷 ¡Minijuego: Escáner de Visión! 📷</span>
+        <div class="bounding-box-game" id="bbox-game-board">
+          <img src="assets/jagui_mascot_hero.png" class="bbox-target-img" alt="Jagüi">
+          <div class="bbox-laser"></div>
+          <div class="bbox-rect hidden" id="bbox-rect-element">
+            <span class="bbox-label">Jagüi Detectado</span>
+          </div>
+          <div class="bbox-canvas-overlay" id="bbox-canvas" onmousedown="startBBoxDraw(event)" onmousemove="drawBBox(event)" onmouseup="endBBoxDraw(event)"></div>
+        </div>
+        <p class="bbox-hint-text">¡Haz clic y arrastra un rectángulo neón para encerrar la cabeza de Jagüi!</p>
+      </div>
+    `;
+    area.innerHTML = html;
+    initBBoxMinigameTouchSupport(); // Soporte para móviles
+  }
+  
+  else if (question.type === 'neural_connect') {
+    let html = `
+      <div class="minigame-container">
+        <span class="minigame-title">🕸️ ¡Minijuego: Conectores Ciber! 🕸️</span>
+        <div class="neural-connect-game">
+          <div class="neural-sandbox-svg-container">
+            <svg class="neural-sandbox-svg" viewBox="0 0 320 220">
+              <!-- Cables / Conexiones -->
+              <path class="wire-link" id="wire-1" d="M 60,60 L 160,110" onclick="toggleNeuralWire(1)"></path>
+              <path class="wire-link" id="wire-2" d="M 60,160 L 160,110" onclick="toggleNeuralWire(2)"></path>
+              <path class="wire-link" id="wire-3" d="M 160,110 L 260,60" onclick="toggleNeuralWire(3)"></path>
+              <path class="wire-link" id="wire-4" d="M 160,110 L 260,160" onclick="toggleNeuralWire(4)"></path>
+              
+              <!-- Nodos de Entrada -->
+              <circle cx="60" cy="60" r="10" fill="cyan" class="node-btn" onclick="playAudioSynth('click')"></circle>
+              <text x="60" y="85" class="node-label-svg">📷 Ver</text>
+              
+              <circle cx="60" cy="160" r="10" fill="cyan" class="node-btn" onclick="playAudioSynth('click')"></circle>
+              <text x="60" y="185" class="node-label-svg">🎙️ Oír</text>
+              
+              <!-- Nodo Intermedio (Oculto) -->
+              <circle cx="160" cy="110" r="10" fill="magenta" class="node-btn" onclick="playAudioSynth('click')"></circle>
+              <text x="160" y="135" class="node-label-svg">🧠 Pensar</text>
+              
+              <!-- Nodos de Salida -->
+              <circle cx="260" cy="60" r="10" fill="yellow" class="node-btn" onclick="playAudioSynth('click')"></circle>
+              <text x="260" y="85" class="node-label-svg">🚶 Mover</text>
+              
+              <circle cx="260" cy="160" r="10" fill="yellow" class="node-btn" onclick="playAudioSynth('click')"></circle>
+              <text x="260" y="185" class="node-label-svg">🗣️ Hablar</text>
+            </svg>
+          </div>
+          <p class="bbox-hint-text">¡Haz clic en los 4 cables de energía grises para encender la red neuronal!</p>
+        </div>
+      </div>
+    `;
+    area.innerHTML = html;
+    appState.connectedWires = []; // Reiniciar estado de cables
+  }
+  
+  else if (question.type === 'reinforcement') {
+    let html = `
+      <div class="minigame-container">
+        <span class="minigame-title">🎮 ¡Minijuego: Entrena a Jagüi! 🎮</span>
+        <div class="reinforcement-game">
+          <div class="runway-sandbox" id="runway-board">
+            <div class="runway-ground"></div>
+            <div class="runway-mascot walking" id="runway-jagui"></div>
+            <div class="runway-obstacle" id="runway-obstacle">🌵</div>
+          </div>
+          <div class="reinforcement-stats">
+            <span class="stat-group">Confianza IA: <strong id="val-conf">0%</strong></span>
+            <span class="stat-group">Premio: <strong id="val-cookies">0 🍪</strong></span>
+          </div>
+          <div class="reinforcement-controls">
+            <button class="btn-3d btn-primary" onclick="reinforcementAction('cookie')">
+              <span>Dar Galleta 🍪</span>
+            </button>
+            <button class="btn-3d btn-secondary" onclick="reinforcementAction('whistle')">
+              <span>Tocar Silbato 🔔</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+    area.innerHTML = html;
+    initReinforcementGame();
+  }
 }
 
 function selectChoiceOption(idx) {
@@ -1691,11 +2317,426 @@ function selectWordBuilder(word, idx) {
   });
 }
 
+// ==========================================================================
+// CONTROLADORES LÓGICOS DE LOS 4 MINIJUEGOS INTERACTIVOS (JAGÜI IA)
+// ==========================================================================
+
+// --- MINIJUEGO 1: CLASIFICACIÓN POR ARRASTRE (DRAG CLASSIFY) ---
+let minigameClassified = {}; // Almacena { itemId: 'healthy' | 'junk' }
+
+function handleMinigameDragStart(event, itemId) {
+  if (appState.isChecking) return;
+  event.dataTransfer.setData("text/plain", itemId);
+  playAudioSynth('click');
+}
+
+function allowMinigameDrop(event) {
+  event.preventDefault();
+  const bin = event.currentTarget;
+  bin.classList.add('hovered');
+}
+
+function handleMinigameDrop(event, basketType) {
+  event.preventDefault();
+  const bin = event.currentTarget;
+  bin.classList.remove('hovered');
+  
+  if (appState.isChecking) return;
+  
+  const itemId = event.dataTransfer.getData("text/plain");
+  classifyItemInMinigame(itemId, basketType);
+}
+
+function classifyItemInMinigame(itemId, basketType) {
+  const itemEl = document.getElementById(`drag-item-${itemId}`);
+  if (!itemEl) return;
+  
+  const targetGrid = document.getElementById(`basket-${basketType}-items`);
+  if (!targetGrid) return;
+  
+  playAudioSynth('click');
+  targetGrid.appendChild(itemEl);
+  itemEl.style.position = "static"; // Asegurar posición relativa estándar
+  
+  minigameClassified[itemId] = basketType;
+}
+
+// Soporte táctil móvil interactivo para Arrastre
+function initDragMinigameTouchSupport() {
+  setTimeout(() => {
+    const items = document.querySelectorAll('.draggable-item');
+    items.forEach(item => {
+      let activeDrag = false;
+      let startX = 0, startY = 0;
+      let initialLeft = 0, initialTop = 0;
+      const itemId = item.id.replace('drag-item-', '');
+      
+      item.addEventListener('touchstart', (e) => {
+        if (appState.isChecking) return;
+        activeDrag = true;
+        const touch = e.touches[0];
+        startX = touch.clientX;
+        startY = touch.clientY;
+        item.style.position = 'relative';
+        initialLeft = parseFloat(item.style.left) || 0;
+        initialTop = parseFloat(item.style.top) || 0;
+        item.style.zIndex = 1000;
+        playAudioSynth('click');
+      });
+      
+      item.addEventListener('touchmove', (e) => {
+        if (!activeDrag) return;
+        e.preventDefault();
+        const touch = e.touches[0];
+        const dx = touch.clientX - startX;
+        const dy = touch.clientY - startY;
+        item.style.left = `${initialLeft + dx}px`;
+        item.style.top = `${initialTop + dy}px`;
+      });
+      
+      item.addEventListener('touchend', (e) => {
+        if (!activeDrag) return;
+        activeDrag = false;
+        item.style.zIndex = '';
+        
+        // Verificar colisión con las cestas
+        const rect = item.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        
+        const basketHealthy = document.getElementById('basket-healthy');
+        const basketJunk = document.getElementById('basket-junk');
+        
+        if (basketHealthy && isPointInsideRect(centerX, centerY, basketHealthy.getBoundingClientRect())) {
+          classifyItemInMinigame(itemId, 'healthy');
+        } else if (basketJunk && isPointInsideRect(centerX, centerY, basketJunk.getBoundingClientRect())) {
+          classifyItemInMinigame(itemId, 'junk');
+        } else {
+          // Regresar a su lugar con un leve rebote
+          item.style.left = '0px';
+          item.style.top = '0px';
+          playAudioSynth('incorrect');
+        }
+      });
+    });
+  }, 100);
+}
+
+function isPointInsideRect(x, y, rect) {
+  return x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
+}
+
+// --- MINIJUEGO 2: CAJA DELIMITADORA DE VISIÓN (BOUNDING BOX) ---
+let isBBoxDrawing = false;
+let bboxStart = { x: 0, y: 0 };
+let bboxEnd = { x: 0, y: 0 };
+let bboxGameWon = false;
+
+function startBBoxDraw(event) {
+  if (appState.isChecking || bboxGameWon) return;
+  
+  const rectBoard = document.getElementById('bbox-game-board').getBoundingClientRect();
+  isBBoxDrawing = true;
+  
+  // Coordenadas relativas
+  bboxStart.x = event.clientX - rectBoard.left;
+  bboxStart.y = event.clientY - rectBoard.top;
+  
+  const bbox = document.getElementById('bbox-rect-element');
+  bbox.style.left = `${bboxStart.x}px`;
+  bbox.style.top = `${bboxStart.y}px`;
+  bbox.style.width = '0px';
+  bbox.style.height = '0px';
+  bbox.classList.remove('hidden');
+  
+  playAudioSynth('click');
+}
+
+function drawBBox(event) {
+  if (!isBBoxDrawing) return;
+  
+  const rectBoard = document.getElementById('bbox-game-board').getBoundingClientRect();
+  bboxEnd.x = event.clientX - rectBoard.left;
+  bboxEnd.y = event.clientY - rectBoard.top;
+  
+  const width = Math.abs(bboxEnd.x - bboxStart.x);
+  const height = Math.abs(bboxEnd.y - bboxStart.y);
+  const left = Math.min(bboxStart.x, bboxEnd.x);
+  const top = Math.min(bboxStart.y, bboxEnd.y);
+  
+  const bbox = document.getElementById('bbox-rect-element');
+  bbox.style.left = `${left}px`;
+  bbox.style.top = `${top}px`;
+  bbox.style.width = `${width}px`;
+  bbox.style.height = `${height}px`;
+}
+
+function endBBoxDraw(event) {
+  if (!isBBoxDrawing) return;
+  isBBoxDrawing = false;
+  
+  // Validar si la caja delimitadora encierra adecuadamente el rostro de Jagüi
+  // El jaguar en la imagen de 320x240 está centrado aproximadamente entre x: 90-230, y: 30-170
+  const bbox = document.getElementById('bbox-rect-element').getBoundingClientRect();
+  const board = document.getElementById('bbox-game-board').getBoundingClientRect();
+  
+  const leftRel = bbox.left - board.left;
+  const topRel = bbox.top - board.top;
+  const width = bbox.width;
+  const height = bbox.height;
+  
+  console.log("Caja delimitadora trazada:", leftRel, topRel, width, height);
+  
+  // Validar dimensiones lógicas de la caja
+  if (width > 60 && height > 60 && leftRel > 40 && leftRel < 190 && topRel > 10 && topRel < 130) {
+    bboxGameWon = true;
+    playAudioSynth('correct');
+    document.getElementById('bbox-rect-element').style.borderColor = 'var(--accent-green)';
+    document.getElementById('bbox-rect-element').style.boxShadow = '0 0 20px var(--accent-green)';
+    document.getElementById('instructor-bubble').innerHTML = "¡Excelente! Raaaawr. Has dibujado una caja perfecta. ¡Mi sistema de visión artificial me ha detectado con éxito! 📷🐆";
+    speakText("¡Excelente! Has dibujado una caja perfecta. ¡Mi sistema de visión artificial me ha detectado con éxito!");
+    triggerConfetti();
+  } else {
+    // Caja incorrecta
+    playAudioSynth('incorrect');
+    document.getElementById('bbox-rect-element').style.borderColor = '#ff4b4b';
+    document.getElementById('bbox-rect-element').style.boxShadow = '0 0 15px #ff4b4b';
+    setTimeout(() => {
+      if (!bboxGameWon) {
+        document.getElementById('bbox-rect-element').classList.add('hidden');
+      }
+    }, 1200);
+  }
+}
+
+// Soporte touch móvil para Bounding Box
+function initBBoxMinigameTouchSupport() {
+  setTimeout(() => {
+    const canvasOverlay = document.getElementById('bbox-canvas');
+    if (!canvasOverlay) return;
+    
+    canvasOverlay.addEventListener('touchstart', (e) => {
+      const touch = e.touches[0];
+      startBBoxDraw(touch);
+    });
+    
+    canvasOverlay.addEventListener('touchmove', (e) => {
+      e.preventDefault();
+      const touch = e.touches[0];
+      drawBBox(touch);
+    });
+    
+    canvasOverlay.addEventListener('touchend', (e) => {
+      endBBoxDraw(null);
+    });
+  }, 100);
+}
+
+// --- MINIJUEGO 3: RED NEURONAL ELÉCTRICA (NEURAL CONNECT) ---
+let connectedWires = [];
+
+function toggleNeuralWire(wireId) {
+  if (appState.isChecking) return;
+  
+  const idx = connectedWires.indexOf(wireId);
+  const wire = document.getElementById(`wire-${wireId}`);
+  
+  if (idx !== -1) {
+    playAudioSynth('click');
+    connectedWires.splice(idx, 1);
+    wire.classList.remove('connected');
+    wire.classList.remove('power-flow');
+  } else {
+    playAudioSynth('correct');
+    connectedWires.push(wireId);
+    wire.classList.add('connected');
+    
+    // Animación de flujo eléctrico
+    wire.classList.add('power-flow');
+    setTimeout(() => {
+      wire.classList.remove('power-flow');
+    }, 800);
+  }
+  
+  // Validar si todos los 4 cables están conectados
+  if (connectedWires.length === 4) {
+    setTimeout(() => {
+      playAudioSynth('victory');
+      document.getElementById('instructor-bubble').innerHTML = "¡Raaaawr! ¡Toda la red neuronal está encendida! Las luces viajan a súper velocidad y el robot camina perfectamente. 🕸️🧠🚶";
+      speakText("¡Toda la red neuronal está encendida! Las luces viajan a súper velocidad y el robot camina perfectamente.");
+      triggerConfetti();
+    }, 500);
+  }
+}
+
+// --- MINIJUEGO 4: ENTRENAMIENTO POR REFUERZO (REINFORCEMENT GAME) ---
+let reinforcementState = {
+  confidence: 0,
+  cookies: 0,
+  obstacleX: 300,
+  isJumping: false,
+  loopActive: false
+};
+let reinforcementLoopTimer = null;
+
+function initReinforcementGame() {
+  reinforcementState.confidence = 0;
+  reinforcementState.cookies = 0;
+  reinforcementState.obstacleX = 300;
+  reinforcementState.isJumping = false;
+  reinforcementState.loopActive = true;
+  
+  document.getElementById('val-conf').innerText = "0%";
+  document.getElementById('val-cookies').innerText = "0 🍪";
+  
+  const jagui = document.getElementById('runway-jagui');
+  if (jagui) {
+    jagui.className = "runway-mascot walking";
+  }
+  
+  // Arrancar el ciclo del obstáculo
+  runReinforcementLoop();
+}
+
+function reinforcementAction(actionType) {
+  if (appState.isChecking) return;
+  
+  const jagui = document.getElementById('runway-jagui');
+  
+  if (actionType === 'cookie') {
+    playAudioSynth('click');
+    
+    // Si la galleta se da justo cuando el obstáculo está pasando por el jaguar y el jaguar saltó
+    // Coordenadas de colisión: el jaguar está en x=30, y el obstáculo colisiona si x está entre 25 y 45
+    const obsLeft = reinforcementState.obstacleX;
+    
+    if (reinforcementState.isJumping && obsLeft > 15 && obsLeft < 55) {
+      // ¡Excelente refuerzo positivo en el milisegundo correcto!
+      playAudioSynth('correct');
+      reinforcementState.confidence += 25;
+      reinforcementState.cookies += 1;
+      
+      // Animación de estrellitas
+      spawnSparkle(50, 40, "🍪✨");
+      
+      if (reinforcementState.confidence > 100) reinforcementState.confidence = 100;
+      
+      document.getElementById('val-conf').innerText = `${reinforcementState.confidence}%`;
+      document.getElementById('val-cookies').innerText = `${reinforcementState.cookies} 🍪`;
+      
+      document.getElementById('instructor-bubble').innerHTML = "¡Excelente! Le diste una galleta 🍪 por saltar el obstáculo. ¡La IA sube su confianza!";
+      speakText("¡Excelente! Le diste una galleta por saltar el obstáculo. ¡La IA sube su confianza!");
+      
+      if (reinforcementState.confidence === 100) {
+        reinforcementState.loopActive = false;
+        playAudioSynth('victory');
+        document.getElementById('instructor-bubble').innerHTML = "¡Perfecto! Raaaawr. Jagüi ha aprendido por refuerzo positivo a saltar de forma automática y no chocará nunca más. ¡Felicidades! 🎮🍪🐆";
+        speakText("¡Perfecto! Jagüi ha aprendido por refuerzo positivo a saltar de forma automática. ¡Felicidades!");
+        triggerConfetti();
+      }
+    } else {
+      // Galleta en mal momento (refuerzo erróneo)
+      playAudioSynth('incorrect');
+      document.getElementById('instructor-bubble').innerHTML = "¡Uy! Le diste una galleta en mal momento. Jagüi se confunde y no aprende el truco.";
+      speakText("Le diste una galleta en mal momento. Jagüi se confunde.");
+      reinforcementState.confidence -= 15;
+      if (reinforcementState.confidence < 0) reinforcementState.confidence = 0;
+      document.getElementById('val-conf').innerText = `${reinforcementState.confidence}%`;
+    }
+  } else if (actionType === 'whistle') {
+    // Silbato: hace saltar a Jagüi
+    if (reinforcementState.isJumping) return;
+    
+    playAudioSynth('click');
+    reinforcementState.isJumping = true;
+    jagui.classList.add('jumping');
+    
+    // Sonido corto de salto
+    const now = audioCtx.currentTime;
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.frequency.setValueAtTime(300, now);
+    osc.frequency.exponentialRampToValueAtTime(700, now + 0.2);
+    gain.gain.setValueAtTime(0.1, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start();
+    osc.stop(now + 0.2);
+    
+    setTimeout(() => {
+      jagui.classList.remove('jumping');
+      reinforcementState.isJumping = false;
+    }, 450);
+  }
+}
+
+function spawnSparkle(x, y, char) {
+  const board = document.getElementById('runway-board');
+  if (!board) return;
+  
+  const sparkle = document.createElement('div');
+  sparkle.className = "runway-sparkle";
+  sparkle.innerText = char;
+  sparkle.style.left = `${x}px`;
+  sparkle.style.bottom = `${y}px`;
+  board.appendChild(sparkle);
+  
+  setTimeout(() => sparkle.remove(), 600);
+}
+
+function runReinforcementLoop() {
+  if (reinforcementLoopTimer) {
+    clearInterval(reinforcementLoopTimer);
+  }
+  
+  reinforcementLoopTimer = setInterval(() => {
+    if (!reinforcementState.loopActive) {
+      clearInterval(reinforcementLoopTimer);
+      return;
+    }
+    
+    // Mover obstáculo de derecha a izquierda
+    reinforcementState.obstacleX -= 6;
+    if (reinforcementState.obstacleX < -30) {
+      reinforcementState.obstacleX = 300; // Reiniciar obstáculo
+    }
+    
+    const obs = document.getElementById('runway-obstacle');
+    if (obs) {
+      obs.style.left = `${reinforcementState.obstacleX}px`;
+    }
+    
+    // Si la confianza es del 100%, Jagüi salta de forma automática
+    if (reinforcementState.confidence === 100 && reinforcementState.obstacleX > 50 && reinforcementState.obstacleX < 70) {
+      reinforcementAction('whistle');
+    }
+    
+    // Verificar colisión física (chocar con obstáculo)
+    const obsLeft = reinforcementState.obstacleX;
+    
+    if (!reinforcementState.isJumping && obsLeft > 25 && obsLeft < 45) {
+      // ¡Colisión! Choque contra el cactus
+      playAudioSynth('incorrect');
+      reinforcementState.obstacleX = 300; // Reiniciar
+      spawnSparkle(35, 30, "💥");
+      
+      document.getElementById('instructor-bubble').innerHTML = "¡Ay! Chocamos contra el cactus. Toca el Silbato 🔔 para hacerme saltar y dale una galleta 🍪 al caer.";
+      speakText("Chocamos contra el cactus. Toca el Silbato para hacerme saltar.");
+    }
+  }, 45);
+}
+
+function spawnConfetti() {
+  triggerConfetti();
+}
+
 function handleQuizAction() {
   const lesson = LESSONS_DATA[appState.currentLessonId];
   const question = lesson.questions[appState.currentQuestionIndex];
 
   if (!appState.isChecking) {
+    // 1. VALIDACIÓN PREVIA DE LLENADO/ACCIÓN
     if (question.type === 'choice' || question.type === 'boolean') {
       if (appState.selectedOptionIndex === null) {
         speakText("¡Oye! Tienes que elegir una opción.");
@@ -1706,11 +2747,34 @@ function handleQuizAction() {
         speakText("Acomoda las palabras en sus lugares.");
         return;
       }
+    } else if (question.type === 'drag_classify') {
+      const totalItems = question.items.length;
+      const classifiedCount = Object.keys(minigameClassified).length;
+      if (classifiedCount < totalItems) {
+        speakText("¡Oye! Tienes que ordenar todos los alimentos en sus cestas primero. 🍏🍩");
+        return;
+      }
+    } else if (question.type === 'bounding_box') {
+      if (!bboxGameWon) {
+        speakText("¡Vamos! Haz clic y arrastra para dibujar una caja alrededor de mi cara. 📷");
+        return;
+      }
+    } else if (question.type === 'neural_connect') {
+      if (connectedWires.length < 4) {
+        speakText("¡Conecta los 4 cables grises para encender la red neuronal! 🕸️🧠");
+        return;
+      }
+    } else if (question.type === 'reinforcement') {
+      if (reinforcementState.confidence < 100) {
+        speakText("¡Sigue entrenándome con galletas hasta que mi confianza llegue al 100%! 🍪🎮");
+        return;
+      }
     }
 
     appState.isChecking = true;
     let isCorrect = false;
 
+    // 2. VERIFICACIÓN DE RESPUESTA CORRECTA
     if (question.type === 'choice') {
       isCorrect = question.options[appState.selectedOptionIndex].isCorrect;
     } else if (question.type === 'boolean') {
@@ -1723,6 +2787,28 @@ function handleQuizAction() {
           isCorrect = false;
           break;
         }
+      }
+    } else if (question.type === 'drag_classify') {
+      isCorrect = true;
+      question.items.forEach(item => {
+        if (minigameClassified[item.id] !== item.type) {
+          isCorrect = false;
+        }
+      });
+      // Reiniciar para la próxima pregunta
+      minigameClassified = {};
+    } else if (question.type === 'bounding_box') {
+      isCorrect = bboxGameWon;
+      bboxGameWon = false; // Reiniciar
+    } else if (question.type === 'neural_connect') {
+      isCorrect = connectedWires.length === 4;
+      connectedWires = []; // Reiniciar
+    } else if (question.type === 'reinforcement') {
+      isCorrect = reinforcementState.confidence === 100;
+      reinforcementState.loopActive = false; // Apagar ciclo del obstáculo
+      if (reinforcementLoopTimer) {
+        clearInterval(reinforcementLoopTimer);
+        reinforcementLoopTimer = null;
       }
     }
 

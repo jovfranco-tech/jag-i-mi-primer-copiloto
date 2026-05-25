@@ -562,9 +562,9 @@ input:checked + .slider::before { transform: translateX(22px); }
 /* Modificador: Vista de Bienvenida */
 .jagui-walk-sprite.welcome-sprite {
   width: 180px;
-  height: 201px;
-  background-size: 720px 201px; /* 4 frames * 180px */
-  animation: jaguiWalkWelcome 0.75s steps(4) infinite, float 4s infinite ease-in-out;
+  height: 238px;
+  background-size: 720px 238px; /* 4 frames * 180px */
+  animation: jaguiWalkWelcome 0.6s steps(4) infinite, float 4s infinite ease-in-out;
   filter: drop-shadow(0 12px 30px rgba(0, 255, 255, 0.32));
   border-radius: var(--radius-md);
   cursor: pointer;
@@ -581,9 +581,9 @@ input:checked + .slider::before { transform: translateX(22px); }
 /* Modificador: Mini Jagüi en barra de progreso */
 .jagui-walk-sprite.mini-sprite {
   width: 38px;
-  height: 42px;
-  background-size: 152px 42px; /* 4 frames * 38px */
-  animation: jaguiWalkMini 0.75s steps(4) infinite;
+  height: 50px;
+  background-size: 152px 50px; /* 4 frames * 38px */
+  animation: jaguiWalkMini 0.6s steps(4) infinite;
   display: inline-block;
 }
 @keyframes jaguiWalkMini {
@@ -1466,6 +1466,7 @@ input:checked + .slider::before { transform: translateX(22px); }
 
 .profile-header-card {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 2.5rem;
   padding: 2.5rem;
@@ -1476,7 +1477,6 @@ input:checked + .slider::before { transform: translateX(22px); }
 }
 
 .profile-avatar-large {
-  font-size: 4.8rem;
   background: rgba(255,255,255,0.06);
   width: 110px;
   height: 110px;
@@ -1486,6 +1486,14 @@ input:checked + .slider::before { transform: translateX(22px); }
   border-radius: 50%;
   border: 3px solid var(--primary-orange);
   box-shadow: 0 4px 15px rgba(255, 144, 0, 0.2);
+  overflow: hidden;
+}
+
+.profile-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
 }
 
 .profile-identity {
@@ -1528,6 +1536,7 @@ input:checked + .slider::before { transform: translateX(22px); }
 
 .profile-stats-grid {
   display: flex;
+  flex-wrap: wrap;
   gap: 1.5rem;
 }
 
@@ -2257,5 +2266,821 @@ body.theme-light .legend-item {
 .shake-animation {
   animation: shake-card 0.4s ease-in-out;
 }
+
+/* ==========================================================================
+   INTERACTIVE FEATURES SLIDERS (ML Sandbox)
+   ========================================================================== */
+.ml-sliders-box {
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: var(--radius-sm);
+  padding: 0.8rem 1rem;
+  margin-top: 1rem;
+  width: 100%;
+  max-width: 250px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  border: 1px solid var(--card-glass-border);
+}
+
+body.theme-light .ml-sliders-box {
+  background: rgba(255, 255, 255, 0.65);
+}
+
+.slider-control {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  text-align: left;
+}
+
+.slider-label {
+  font-size: 0.85rem;
+  font-weight: bold;
+  color: var(--text-light);
+  display: flex;
+  justify-content: space-between;
+}
+
+body.theme-light .slider-label {
+  color: var(--text-light);
+}
+
+.slider-control input[type="range"] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
+  outline: none;
+  transition: background 0.3s ease;
+}
+
+body.theme-light .slider-control input[type="range"] {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.slider-control input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--primary-orange);
+  cursor: pointer;
+  box-shadow: 0 0 6px rgba(255, 144, 0, 0.5);
+  transition: transform 0.1s ease;
+}
+
+.slider-control input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+/* ==========================================================================
+   TIENDA IA & ACCESSORY OVERLAYS
+   ========================================================================== */
+.store-container {
+  max-width: 800px;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.store-intro {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+body.theme-light .store-intro {
+  color: var(--text-light);
+}
+
+.store-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.8rem;
+  margin-top: 1rem;
+}
+
+.store-card {
+  background: var(--card-glass);
+  border: 1px solid var(--card-glass-border);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.store-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--primary-orange);
+  box-shadow: 0 12px 30px rgba(255, 144, 0, 0.15);
+}
+
+.store-item-emoji {
+  font-size: 3.5rem;
+  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.3));
+  animation: float 4s infinite ease-in-out;
+}
+
+.store-card h3 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+body.theme-light .store-card h3 {
+  color: var(--text-light);
+}
+
+.store-card p {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  flex-grow: 1;
+}
+
+body.theme-light .store-card p {
+  color: var(--text-muted);
+}
+
+.store-card-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  width: 100%;
+  align-items: center;
+}
+
+.item-cost {
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: var(--primary-orange);
+}
+
+.btn-equipped {
+  background: var(--primary-green) !important;
+  box-shadow: 0 4px 0 var(--primary-green-dark) !important;
+}
+
+/* Accessory Overlay absolute coordinates positioning */
+.jagui-accessory-overlay {
+  position: absolute;
+  pointer-events: none;
+  z-index: 99;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.welcome-acc {
+  top: 15px;
+  left: 45px;
+  width: 90px;
+  height: 90px;
+  font-size: 3.5rem;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4));
+  animation: float 4s infinite ease-in-out 0.2s;
+}
+
+.instructor-acc {
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 100px;
+  font-size: 3.2rem;
+}
+
+.lab-acc {
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 50px;
+  font-size: 1.8rem;
+}
+
+/* ==========================================================================
+   ESTILOS PREMIUM DE CHARLA IA Y CHATBOT GEMINI
+   ========================================================================== */
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 120px);
+  max-width: 850px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  box-sizing: border-box;
+}
+
+.chat-box {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(18, 30, 24, 0.5); /* Fondo selvático profundo translúcido */
+  margin: 1.5rem 0;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+}
+
+.chat-messages-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  max-height: 500px;
+}
+
+.chat-message {
+  display: flex;
+  gap: 1rem;
+  max-width: 80%;
+  animation: slideUp 0.3s ease-out;
+}
+
+.chat-message.jagui-msg {
+  align-self: flex-start;
+}
+
+.chat-message.user-msg {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+
+.msg-avatar {
+  width: 44px;
+  height: 44px;
+  background: var(--bg-card);
+  border: 2px solid var(--accent-cyan);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  box-shadow: 0 4px 10px rgba(0,255,255,0.2);
+}
+
+.chat-message.user-msg .msg-avatar {
+  border-color: var(--primary-gold);
+  box-shadow: 0 4px 10px rgba(255,191,0,0.2);
+}
+
+.msg-content-wrapper {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-md);
+  padding: 0.85rem 1.2rem;
+  border: 1px solid rgba(255,255,255,0.06);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+}
+
+.chat-message.user-msg .msg-content-wrapper {
+  background: rgba(0, 255, 255, 0.08);
+  border: 1px solid rgba(0, 255, 255, 0.2);
+}
+
+.msg-username {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent-cyan);
+  display: block;
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.chat-message.user-msg .msg-username {
+  color: var(--primary-gold);
+  text-align: right;
+}
+
+.msg-text {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin: 0;
+  color: var(--text-color);
+}
+
+.chat-input-bar {
+  display: flex;
+  padding: 1rem;
+  background: rgba(0,0,0,0.3);
+  border-top: 1px solid rgba(255,255,255,0.1);
+  gap: 0.75rem;
+}
+
+.chat-input {
+  flex: 1;
+  background: rgba(255,255,255,0.08);
+  border: 2px solid rgba(255,255,255,0.15);
+  border-radius: var(--radius-sm);
+  padding: 0.8rem 1.2rem;
+  color: #fff;
+  font-family: inherit;
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.chat-input:focus {
+  border-color: var(--accent-cyan);
+  background: rgba(255,255,255,0.12);
+  box-shadow: 0 0 15px rgba(0,255,255,0.25);
+}
+
+.btn-chat-send {
+  padding: 0.8rem 1.5rem;
+  white-space: nowrap;
+}
+
+.chat-system-config {
+  margin-top: 1rem;
+}
+
+.glass-details {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--radius-md);
+  padding: 0.75rem 1.2rem;
+  cursor: pointer;
+}
+
+.glass-details summary {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.api-config-content {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  cursor: default;
+}
+
+.api-key-input {
+  background: rgba(0,0,0,0.4);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: var(--radius-sm);
+  padding: 0.65rem 1rem;
+  color: #fff;
+  font-size: 0.9rem;
+  outline: none;
+}
+
+.api-key-status {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--accent-cyan);
+}
+
+/* ==========================================================================
+   ESTILOS PREMIUM DE AUTENTICACIÓN FIREBASE
+   ========================================================================== */
+.auth-dialog-content {
+  max-width: 480px;
+  padding: 2.5rem 2rem !important;
+  text-align: center;
+}
+
+.auth-header p {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+
+.auth-form-box {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  animation: fadeIn 0.4s ease-out;
+}
+
+.input-group {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.input-group label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-color);
+  letter-spacing: 0.5px;
+}
+
+.input-group input {
+  background: rgba(0,0,0,0.3);
+  border: 2px solid rgba(255,255,255,0.15);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem 1rem;
+  color: #fff;
+  font-family: inherit;
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.input-group input:focus {
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 12px rgba(0,255,255,0.25);
+}
+
+.auth-footer {
+  margin-top: 1.5rem;
+}
+
+/* ==========================================================================
+   ESTILOS GENERALES DE MINIJUEGOS INTERACTIVOS (LECCIONES)
+   ========================================================================== */
+.minigame-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: center;
+  width: 100%;
+  padding: 1rem 0;
+  box-sizing: border-box;
+}
+
+.minigame-title {
+  font-size: 1.1rem;
+  color: var(--accent-cyan);
+  font-weight: bold;
+  text-align: center;
+  text-shadow: 0 0 10px rgba(0,255,255,0.2);
+}
+
+/* MINIJUEGO 1: CLASIFICACIÓN POR ARRASTRE (DRAG CLASSIFY) */
+.drag-classify-board {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  width: 100%;
+  align-items: center;
+}
+
+.draggable-items-pool {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  min-height: 80px;
+  padding: 1rem;
+  background: rgba(255,255,255,0.04);
+  border: 1px dashed rgba(255,255,255,0.12);
+  border-radius: var(--radius-md);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.draggable-item {
+  background: var(--bg-card);
+  border: 2px solid var(--accent-cyan);
+  border-radius: var(--radius-md);
+  padding: 0.8rem 1.2rem;
+  cursor: grab;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  user-select: none;
+  font-weight: 700;
+  font-size: 1rem;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s, box-shadow 0.2s;
+  touch-action: none; /* Para soporte móvil */
+}
+
+.draggable-item:active {
+  cursor: grabbing;
+  transform: scale(1.08) rotate(2deg);
+  box-shadow: 0 10px 20px rgba(0, 255, 255, 0.4);
+}
+
+.baskets-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.basket-bin {
+  background: rgba(0, 0, 0, 0.25);
+  border: 3px dashed rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem 1rem;
+  text-align: center;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1rem;
+  transition: all 0.3s ease;
+}
+
+.basket-bin.hovered {
+  border-color: var(--accent-cyan);
+  background: rgba(0, 255, 255, 0.08);
+  box-shadow: 0 0 20px rgba(0,255,255,0.2);
+  transform: scale(1.02);
+}
+
+.basket-header {
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.basket-bin.healthy-basket .basket-header { color: var(--accent-green); }
+.basket-bin.junk-basket .basket-header { color: #ff8b8b; }
+
+.basket-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  width: 100%;
+}
+
+/* MINIJUEGO 2: CAJA DELIMITADORA DE VISIÓN (BOUNDING BOX) */
+.bounding-box-game {
+  position: relative;
+  width: 320px;
+  height: 240px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  border: 2px solid rgba(255,255,255,0.15);
+  background: #08120e;
+}
+
+.bbox-target-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+  pointer-events: none;
+}
+
+.bbox-canvas-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  cursor: crosshair;
+}
+
+.bbox-rect {
+  position: absolute;
+  border: 3px solid var(--accent-cyan);
+  box-shadow: 0 0 15px var(--accent-cyan);
+  background: rgba(0, 255, 255, 0.15);
+  border-radius: 2px;
+  box-sizing: border-box;
+}
+
+.bbox-laser {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(180deg, transparent, rgba(0,255,255,0.8), transparent);
+  box-shadow: 0 0 10px rgba(0,255,255,0.8);
+  animation: laserScan 2s infinite ease-in-out;
+  pointer-events: none;
+}
+
+@keyframes laserScan {
+  0%, 100% { top: 5%; }
+  50% { top: 95%; }
+}
+
+.bbox-label {
+  position: absolute;
+  top: -28px;
+  left: -3px;
+  background: var(--accent-cyan);
+  color: #000;
+  font-size: 0.75rem;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 3px 3px 0 0;
+  text-transform: uppercase;
+}
+
+.bbox-hint-text {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  text-align: center;
+  max-width: 280px;
+}
+
+/* MINIJUEGO 3: RED NEURONAL ELÉCTRICA (NEURAL CONNECT) */
+.neural-connect-game {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.neural-sandbox-svg-container {
+  position: relative;
+  width: 320px;
+  height: 220px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 2px solid rgba(255,255,255,0.08);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+}
+
+.neural-sandbox-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.node-btn {
+  cursor: pointer;
+  transition: r 0.2s, filter 0.2s;
+}
+
+.node-btn:hover {
+  r: 12px;
+  filter: drop-shadow(0 0 8px rgba(0,255,255,0.8));
+}
+
+.wire-link {
+  stroke-dasharray: 8 6;
+  stroke: rgba(255,255,255,0.15);
+  stroke-width: 3;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.wire-link:hover {
+  stroke-width: 5;
+  stroke: rgba(255,255,255,0.4);
+}
+
+.wire-link.connected {
+  stroke: var(--accent-cyan);
+  stroke-width: 4;
+  stroke-dasharray: 0;
+  filter: drop-shadow(0 0 8px var(--accent-cyan));
+  animation: electricFlow 1s infinite linear;
+}
+
+.wire-link.power-flow {
+  stroke-dasharray: 10 15;
+  stroke: var(--primary-gold);
+  stroke-width: 5;
+  animation: electricFlow 0.5s infinite linear;
+}
+
+@keyframes electricFlow {
+  from { stroke-dashoffset: 25; }
+  to { stroke-dashoffset: 0; }
+}
+
+.node-label-svg {
+  fill: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  text-anchor: middle;
+  pointer-events: none;
+}
+
+/* MINIJUEGO 4: ENTRENAMIENTO POR REFUERZO (REINFORCEMENT GAME) */
+.reinforcement-game {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+}
+
+.runway-sandbox {
+  position: relative;
+  width: 320px;
+  height: 140px;
+  background: linear-gradient(180deg, #163628, #0b1f16);
+  border: 2px solid rgba(255,255,255,0.12);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
+}
+
+.runway-ground {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 35px;
+  background: #1d4632;
+  border-top: 3px solid var(--accent-green);
+}
+
+.runway-mascot {
+  position: absolute;
+  left: 30px;
+  bottom: 30px;
+  width: 44px;
+  height: 58px;
+  background-image: url('assets/jagui_spritesheet.png');
+  background-size: 176px 58px; /* 4 frames */
+  background-repeat: no-repeat;
+  transition: bottom 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.runway-mascot.walking {
+  animation: runwayWalk 0.4s steps(4) infinite;
+}
+
+.runway-mascot.jumping {
+  bottom: 85px; /* Altura de salto */
+}
+
+@keyframes runwayWalk {
+  from { background-position: 0px 0px; }
+  to { background-position: -176px 0px; }
+}
+
+.runway-obstacle {
+  position: absolute;
+  right: -30px;
+  bottom: 32px;
+  font-size: 1.8rem;
+  transition: left 0.05s linear;
+}
+
+.runway-sparkle {
+  position: absolute;
+  font-size: 1.3rem;
+  pointer-events: none;
+  animation: popSparkle 0.6s ease-out forwards;
+}
+
+@keyframes popSparkle {
+  0% { transform: scale(0.2) translateY(0); opacity: 1; }
+  100% { transform: scale(1.3) translateY(-40px); opacity: 0; }
+}
+
+.reinforcement-controls {
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+  justify-content: center;
+}
+
+.reinforcement-stats {
+  display: flex;
+  gap: 1.5rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.stat-group strong {
+  color: var(--accent-cyan);
+}
+
+/* ==========================================================================
+   TRANSICIONES Y SUAVIZADO EXTRA
+   ========================================================================== */
+@keyframes slideUp {
+  from { transform: translateY(15px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.hidden {
+  display: none !important;
+}
+
+
 
 
