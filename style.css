@@ -1891,3 +1891,371 @@ input:checked + .slider::before { transform: translateX(22px); }
     justify-content: center;
   }
 }
+
+/* ==========================================================================
+   TEMA SELVA SOLEADA (LIGHT MODE)
+   ========================================================================== */
+body.theme-light {
+  --bg-dark: hsl(88, 40%, 93%);
+  --bg-darker: hsl(88, 40%, 86%);
+  --bg-light-dark: hsl(88, 30%, 97%);
+  --text-light: hsl(120, 45%, 10%);
+  --text-muted: hsl(120, 20%, 36%);
+  
+  --card-glass: rgba(255, 255, 255, 0.45);
+  --card-glass-border: rgba(39, 174, 96, 0.2);
+  --card-glass-glow: rgba(39, 174, 96, 0.08);
+}
+
+body.theme-light .brand-text {
+  background: linear-gradient(45deg, hsl(120, 80%, 30%), var(--primary-orange));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+body.theme-light .nav-bar {
+  border-right-color: var(--card-glass-border);
+}
+
+body.theme-light .option-card {
+  background: rgba(255, 255, 255, 0.5);
+  border-color: rgba(39, 174, 96, 0.15);
+  color: var(--text-light);
+}
+
+body.theme-light .option-card:hover {
+  background: rgba(46, 204, 113, 0.08);
+  border-color: var(--primary-green);
+}
+
+body.theme-light .option-card.selected {
+  background: rgba(46, 204, 113, 0.15);
+  border-color: var(--primary-green);
+  box-shadow: 0 4px 15px rgba(46, 204, 113, 0.12);
+}
+
+body.theme-light .instructor-speech-bubble {
+  background: var(--bg-darker);
+  border-color: var(--primary-green);
+  color: var(--text-light);
+}
+
+body.theme-light .instructor-speech-bubble::after {
+  border-color: var(--primary-green) transparent;
+}
+
+body.theme-light .nav-btn {
+  color: var(--text-muted);
+}
+
+body.theme-light .nav-btn:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+  color: var(--text-light);
+}
+
+body.theme-light .nav-btn.active {
+  background: linear-gradient(135deg, rgba(39, 174, 96, 0.15), rgba(255, 144, 0, 0.1));
+  border-color: var(--primary-green);
+  color: var(--primary-green);
+  box-shadow: 0 4px 15px rgba(39, 174, 96, 0.1);
+}
+
+body.theme-light .p-stat {
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid var(--card-glass-border);
+}
+
+body.theme-light .p-stat-val {
+  color: var(--primary-green);
+}
+
+body.theme-light .p-stat-lbl {
+  color: var(--text-muted);
+}
+
+body.theme-light .island-info {
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+body.theme-light .world-header {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.3));
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+body.theme-light .world-header h3 {
+  color: var(--text-light);
+}
+
+body.theme-light .world-header span {
+  color: var(--text-muted);
+}
+
+body.theme-light .nav-bar {
+  background-color: var(--bg-darker);
+}
+
+body.theme-light .nav-user-preview {
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
+body.theme-light .mascot-speech-bubble {
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+body.theme-light .mascot-speech-bubble::after {
+  border-color: rgba(255, 255, 255, 0.85) transparent;
+}
+
+body.theme-light .glass-dialog {
+  background: rgba(255, 255, 255, 0.9);
+  color: #000;
+  border-color: rgba(39, 174, 96, 0.3);
+}
+
+body.theme-light .dialog-info h2 {
+  color: #000;
+}
+
+body.theme-light .dialog-info p {
+  color: var(--text-muted);
+}
+
+body.theme-light .reward-box {
+  background: var(--bg-darker);
+}
+
+body.theme-light .exit-actions button.btn-secondary {
+  color: #fff;
+}
+
+body.theme-light .lab-bin {
+  background: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+}
+
+body.theme-light .lab-center-console {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+body.theme-light .ml-machine-box {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+body.theme-light .test-food-btn {
+  background: rgba(255, 255, 255, 0.9);
+}
+
+body.theme-light .test-speech-bubble {
+  background: rgba(255, 255, 255, 0.9);
+}
+
+body.theme-light .test-speech-bubble::before {
+  border-color: transparent var(--primary-purple) transparent transparent;
+}
+
+/* ==========================================================================
+   VIEW TRANSITIONS API (Zero-Cut Fluid Navigation)
+   ========================================================================== */
+@keyframes slide-to-left {
+  to { transform: translateX(-30px); opacity: 0; }
+}
+@keyframes slide-from-right {
+  from { transform: translateX(30px); opacity: 0; }
+}
+
+::view-transition-old(root) {
+  animation: 0.28s cubic-bezier(0.25, 0.8, 0.25, 1) both slide-to-left;
+}
+
+::view-transition-new(root) {
+  animation: 0.28s cubic-bezier(0.25, 0.8, 0.25, 1) both slide-from-right;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(root),
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none !important;
+  }
+}
+
+/* ==========================================================================
+   GAMIFIED STREAK FLAME
+   ========================================================================== */
+@keyframes flame-pulse {
+  0% { transform: scale(1); filter: drop-shadow(0 0 2px #FF5722); }
+  50% { transform: scale(1.18) rotate(6deg); filter: drop-shadow(0 0 10px #FF9800); }
+  100% { transform: scale(1); filter: drop-shadow(0 0 2px #FF5722); }
+}
+.streak-flame-active {
+  animation: flame-pulse 1.2s infinite ease-in-out;
+  display: inline-block;
+}
+
+/* ==========================================================================
+   LABORATORIO: GRÁFICO DE CENTROIDES 2D (Machine Learning Real)
+   ========================================================================== */
+.lab-graph-card {
+  margin-top: 2rem;
+  padding: 1.8rem;
+  border-radius: var(--radius-md);
+  background: var(--card-glass);
+  border: 1px solid var(--card-glass-border);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  align-self: center;
+  width: 100%;
+  max-width: 600px;
+  animation: fadeIn 0.4s ease-out;
+}
+
+.graph-description {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+}
+
+.centroid-graph-wrapper {
+  display: flex;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: var(--radius-sm);
+  padding: 1rem;
+  border: 1px solid var(--card-glass-border);
+  position: relative;
+  overflow: hidden;
+}
+
+body.theme-light .centroid-graph-wrapper {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.centroid-graph-svg {
+  width: 100%;
+  max-height: 320px;
+  display: block;
+}
+
+/* Puntos dinámicos en el plano cartesiano */
+.graph-dot {
+  font-size: 1.6rem;
+  dominant-baseline: middle;
+  text-anchor: middle;
+  cursor: pointer;
+  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes popIn {
+  from { transform: scale(0) translate(0, 0); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* Centroides calculados matemáticamente */
+.graph-centroid {
+  font-size: 2.2rem;
+  dominant-baseline: middle;
+  text-anchor: middle;
+  filter: drop-shadow(0 0 6px var(--centroid-glow, cyan));
+  animation: pulseGlow 1.5s infinite ease-in-out;
+}
+
+@keyframes pulseGlow {
+  0% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.1); opacity: 1; filter: drop-shadow(0 0 12px var(--centroid-glow, cyan)); }
+  100% { transform: scale(1); opacity: 0.9; }
+}
+
+.graph-centroid.healthy {
+  --centroid-glow: #2ECC71;
+}
+
+.graph-centroid.junk {
+  --centroid-glow: #E74C3C;
+}
+
+/* Líneas de escaneo Euclidiano de distancia */
+.distance-line {
+  stroke-dasharray: 6;
+  animation: dashSpeed 1.5s linear infinite;
+  transition: stroke 0.3s ease, stroke-width 0.3s ease;
+}
+
+@keyframes dashSpeed {
+  to { stroke-dashoffset: -20; }
+}
+
+/* Leyendas */
+.graph-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.5rem;
+  justify-content: center;
+  margin-top: 1.2rem;
+  font-size: 0.88rem;
+  border-top: 1px solid var(--card-glass-border);
+  padding-top: 1rem;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-muted);
+}
+
+body.theme-light .legend-item {
+  color: var(--text-light);
+}
+
+.legend-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.legend-dot.healthy {
+  background-color: var(--primary-green);
+  box-shadow: 0 0 6px var(--primary-green);
+}
+
+.legend-dot.junk {
+  background-color: var(--primary-red);
+  box-shadow: 0 0 6px var(--primary-red);
+}
+
+.legend-dot.centroid-healthy {
+  width: auto;
+  height: auto;
+  font-size: 1rem;
+}
+
+.legend-dot.centroid-junk {
+  width: auto;
+  height: auto;
+  font-size: 1rem;
+}
+
+/* Ajustes de fluidización y suavizado de los sprites de Jagüi */
+.jagui-walk-sprite.welcome-sprite,
+.jagui-walk-sprite.mini-sprite {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  backface-visibility: hidden;
+  perspective: 1000px;
+  transform: translateZ(0);
+}
+
+/* Estilos de sacudida (shake) en caso de fallar quizes */
+@keyframes shake-card {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-8px); }
+  40%, 80% { transform: translateX(8px); }
+}
+
+.shake-animation {
+  animation: shake-card 0.4s ease-in-out;
+}
+
+

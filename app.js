@@ -1291,31 +1291,60 @@ function animateConfetti() {
   confettiAnimationId = requestAnimationFrame(animateConfetti);
 }
 
-// --- NAVEGACIÓN Y CAMBIO DE PANTALLAS ---
+// --- NAVEGACIÓN Y CAMBIO DE PANTALLAS CON VIEW TRANSITIONS API ---
 function switchScreen(screenId) {
   playAudioSynth('click');
   if ('speechSynthesis' in window) window.speechSynthesis.cancel();
   
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  
-  const target = document.getElementById(screenId);
-  if (target) {
-    target.classList.add('active');
+  const updateDOM = () => {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    
+    const target = document.getElementById(screenId);
+    if (target) {
+      target.classList.add('active');
+    }
+    
+    document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+    if (screenId === 'map-screen') {
+      const btn = document.getElementById('btn-nav-map');
+      if (btn) btn.classList.add('active');
+      renderLessonMap();
+    } else if (screenId === 'lab-screen') {
+      const btn = document.getElementById('btn-nav-lab');
+      if (btn) btn.classList.add('active');
+      initMLSandbox();
+    } else if (screenId === 'profile-screen') {
+      const btn = document.getElementById('btn-nav-profile');
+      if (btn) btn.classList.add('active');
+      renderProfileView();
+    }
+    
+    document.querySelector('.main-content').scrollTop = 0;
+  };
+
+  // Uso de la API moderna View Transitions para transiciones suaves y cero cortes bruscos
+  if (!document.startViewTransition) {
+    updateDOM();
+  } else {
+    document.startViewTransition(updateDOM);
   }
+}
+
+// --- TEMA CLARO / OSCURO ("SELVA SOLEADA" VS "NOCHE TECNOLÓGICA") ---
+function toggleTheme() {
+  playAudioSynth('click');
+  const body = document.body;
+  const btnText = document.getElementById('theme-toggle-text');
   
-  document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-  if (screenId === 'map-screen') {
-    document.getElementById('btn-nav-map').classList.add('active');
-    renderLessonMap();
-  } else if (screenId === 'lab-screen') {
-    document.getElementById('btn-nav-lab').classList.add('active');
-    initMLSandbox();
-  } else if (screenId === 'profile-screen') {
-    document.getElementById('btn-nav-profile').classList.add('active');
-    renderProfileView();
+  if (body.classList.contains('theme-light')) {
+    body.classList.remove('theme-light');
+    if (btnText) btnText.innerText = "Tema Día";
+    localStorage.setItem('jagui_theme', 'dark');
+  } else {
+    body.classList.add('theme-light');
+    if (btnText) btnText.innerText = "Tema Noche";
+    localStorage.setItem('jagui_theme', 'light');
   }
-  
-  document.querySelector('.main-content').scrollTop = 0;
 }
 
 // --- PERSISTENCIA (LOCAL STORAGE) ---
@@ -1374,10 +1403,43 @@ function calculateStreak() {
 function updateNavStats() {
   document.getElementById('nav-username-display').innerText = appState.username;
   document.getElementById('nav-xp-display').innerText = `${appState.xp} XP`;
+  
+  // Actualizar racha en la barra del mapa
+  const streakVal = document.getElementById('map-streak');
+  const streakIcon = document.getElementById('map-streak-icon');
+  if (streakVal) {
+    streakVal.innerText = `${appState.streak} ${appState.streak === 1 ? 'Día' : 'Días'}`;
+  }
+  if (streakIcon) {
+    if (appState.streak > 0) {
+      streakIcon.classList.add('streak-flame-active');
+    } else {
+      streakIcon.classList.remove('streak-flame-active');
+    }
+  }
 }
 
 // --- BIENVENIDA Y INICIALIZACIÓN ---
 window.addEventListener('DOMContentLoaded', () => {
+  // Registrar el Service Worker para soporte sin conexión PWA
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./service-worker.js').then((reg) => {
+        console.log('Service Worker registrado con éxito en scope:', reg.scope);
+      }).catch((err) => {
+        console.warn('Error al registrar Service Worker:', err);
+      });
+    });
+  }
+
+  // Cargar el tema preferido del localStorage
+  const savedTheme = localStorage.getItem('jagui_theme');
+  if (savedTheme === 'light') {
+    document.body.classList.add('theme-light');
+    const toggleBtn = document.getElementById('theme-toggle-text');
+    if (toggleBtn) toggleBtn.innerText = "Tema Noche";
+  }
+
   loadFromLocalStorage();
   
   // Agregar saludito por voz inicial
@@ -1675,6 +1737,7 @@ function handleQuizAction() {
 
     if (isCorrect) {
       playAudioSynth('correct');
+      spawnConfetti(); // Celebración de confetti en tiempo real al acertar
       setMascotExpression('jagui-instructor', 'happy');
       
       banner.className = "quiz-feedback-banner correct";
@@ -1687,6 +1750,13 @@ function handleQuizAction() {
     } else {
       playAudioSynth('incorrect');
       setMascotExpression('jagui-instructor', 'sad');
+      
+      // Retroalimentación táctil: Sacudida (shake) en la tarjeta de la pregunta
+      const qCard = document.querySelector('.lesson-question-card');
+      if (qCard) {
+        qCard.classList.add('shake-animation');
+        setTimeout(() => qCard.classList.remove('shake-animation'), 450);
+      }
       
       banner.className = "quiz-feedback-banner incorrect";
       icon.innerText = "💔";
@@ -1866,8 +1936,24 @@ function confirmResetProgress() {
 }
 
 // ==========================================================================
-// --- LABORATORIO DE ML (MÁQUINA INTERACTIVA) ---
+// --- LABORATORIO DE ML (MÁQUINA INTERACTIVA CON CENTROIDES REALES) ---
 // ==========================================================================
+
+const FOOD_FEATURES = {
+  "apple": { sugar: 2.0, vitamins: 9.0, emoji: "🍎", name: "Manzana" },
+  "banana": { sugar: 4.0, vitamins: 8.0, emoji: "🍌", name: "Plátano" },
+  "carrot": { sugar: 1.0, vitamins: 10.0, emoji: "🥕", name: "Zanahoria" },
+  "broccoli": { sugar: 0.5, vitamins: 10.0, emoji: "🥦", name: "Brócoli" },
+  "donut": { sugar: 9.5, vitamins: 0.5, emoji: "🍩", name: "Dona" },
+  "burger": { sugar: 6.0, vitamins: 2.5, emoji: "🍔", name: "Hamburguesa" },
+  "fries": { sugar: 5.0, vitamins: 1.0, emoji: "🍟", name: "Papas" },
+  "pizza": { sugar: 7.0, vitamins: 2.0, emoji: "🍕", name: "Pizza" },
+  
+  // Alimentos misteriosos de prueba
+  "pineapple": { sugar: 4.5, vitamins: 8.5, emoji: "🍍", name: "Piña" },
+  "icecream": { sugar: 9.0, vitamins: 1.0, emoji: "🍦", name: "Helado" },
+  "avocado": { sugar: 1.0, vitamins: 8.0, emoji: "🥑", name: "Aguacate" }
+};
 
 const ML_ITEMS = [
   { id: "apple", emoji: "🍎", name: "Manzana", type: "healthy" },
@@ -1882,10 +1968,17 @@ const ML_ITEMS = [
 ];
 
 const ML_TEST_ITEMS = [
-  { id: "pineapple", emoji: "🍍", name: "Piña", type: "healthy", speech: "¡Es Saludable! Mi red identificó la piña como una fruta llena de vitaminas y agua natural. ¡Buen provecho!" },
-  { id: "icecream", emoji: "🍦", name: "Helado", type: "junk", speech: "¡Es No Saludable! Demasiada azúcar procesada. ¡Es delicioso de vez en cuando, pero mi red lo clasificó correctamente!" },
-  { id: "avocado", emoji: "🥑", name: "Aguacate", type: "healthy", speech: "¡Es Saludable! Excelente grasa vegetal y nutrientes para el cerebro. ¡Increíble decisión de mi IA!" }
+  { id: "pineapple", emoji: "🍍", name: "Piña" },
+  { id: "icecream", emoji: "🍦", name: "Helado" },
+  { id: "avocado", emoji: "🥑", name: "Aguacate" }
 ];
+
+function getGraphCoords(sugar, vitamins) {
+  // Transforma coordenadas del alimento (0 a 10) a píxeles del SVG viewBox 400x320
+  const x = 40 + (sugar / 10) * 340;
+  const y = 280 - (vitamins / 10) * 260;
+  return { x, y };
+}
 
 function initMLSandbox() {
   appState.healthyBin = [];
@@ -1900,6 +1993,14 @@ function initMLSandbox() {
   document.getElementById('brain-status').innerText = "Cargando escáner...";
   document.getElementById('btn-train-ml').disabled = true;
   document.getElementById('lab-test-area').classList.add('hidden');
+  
+  // Ocultar y limpiar el gráfico 2D al reiniciar
+  document.getElementById('lab-graph-card').classList.add('hidden');
+  document.getElementById('graph-training-points').innerHTML = "";
+  document.getElementById('graph-centroids').innerHTML = "";
+  document.getElementById('graph-centroids').classList.add('hidden');
+  document.getElementById('graph-test-vectors').innerHTML = "";
+  document.getElementById('graph-test-point').innerHTML = "";
   
   setMascotExpression('jagui-lab-test', 'normal');
   document.getElementById('test-bubble').innerText = "¡Dame un alimento de prueba para ver qué aprendí!";
@@ -1970,6 +2071,22 @@ function handleDrop(ev, binType) {
       document.getElementById('bin-junk-items').innerHTML += `<div class="bin-item-bubble">${item.emoji}</div>`;
     }
     
+    // Dibujar punto dinámico instantáneo en el gráfico SVG de coordenadas
+    const f = FOOD_FEATURES[item.id];
+    if (f) {
+      const c = getGraphCoords(f.sugar, f.vitamins);
+      const dotColor = binType === 'healthy' ? '#2ECC71' : '#E74C3C';
+      document.getElementById('graph-training-points').innerHTML += `
+        <g class="graph-dot" transform="translate(${c.x}, ${c.y})">
+          <circle r="12" fill="rgba(255, 255, 255, 0.95)" stroke="${dotColor}" stroke-width="2"></circle>
+          <text y="4" font-size="11" text-anchor="middle" dominant-baseline="middle">${f.emoji}</text>
+        </g>
+      `;
+    }
+
+    // Mostrar el contenedor del gráfico si se ha colocado al menos un ejemplo
+    document.getElementById('lab-graph-card').classList.remove('hidden');
+    
     animateNeuralNetPulse(binType);
 
     if (appState.healthyBin.length >= 2 && appState.junkBin.length >= 2) {
@@ -2001,7 +2118,7 @@ function animateNeuralNetPulse(type) {
 function trainMLModel() {
   playAudioSynth('click');
   document.getElementById('btn-train-ml').disabled = true;
-  document.getElementById('brain-status').innerText = "🧠 Entrenando redes neuronales... 📡";
+  document.getElementById('brain-status').innerText = "🧠 Entrenando redes neuronales por centroides... 📡";
   
   setMascotExpression('jagui-welcome', 'thinking');
   
@@ -2035,6 +2152,54 @@ function completeTraining() {
     l.setAttribute('stroke-width', '2.5');
   });
 
+  // Calcular centroides matemáticos reales
+  appState.healthyCentroid = appState.healthyBin.reduce((acc, item) => {
+    const f = FOOD_FEATURES[item.id];
+    if (f) {
+      acc.sugar += f.sugar;
+      acc.vitamins += f.vitamins;
+    }
+    return acc;
+  }, { sugar: 0, vitamins: 0 });
+  
+  if (appState.healthyBin.length > 0) {
+    appState.healthyCentroid.sugar /= appState.healthyBin.length;
+    appState.healthyCentroid.vitamins /= appState.healthyBin.length;
+  }
+
+  appState.junkCentroid = appState.junkBin.reduce((acc, item) => {
+    const f = FOOD_FEATURES[item.id];
+    if (f) {
+      acc.sugar += f.sugar;
+      acc.vitamins += f.vitamins;
+    }
+    return acc;
+  }, { sugar: 0, vitamins: 0 });
+  
+  if (appState.junkBin.length > 0) {
+    appState.junkCentroid.sugar /= appState.junkBin.length;
+    appState.junkCentroid.vitamins /= appState.junkBin.length;
+  }
+
+  // Dibujar y animar los centroides en el gráfico interactivo SVG
+  const hcCoords = getGraphCoords(appState.healthyCentroid.sugar, appState.healthyCentroid.vitamins);
+  const jcCoords = getGraphCoords(appState.junkCentroid.sugar, appState.junkCentroid.vitamins);
+  
+  const centroidsG = document.getElementById('graph-centroids');
+  centroidsG.innerHTML = `
+    <!-- Centroide Saludable -->
+    <g class="graph-centroid healthy" transform="translate(${hcCoords.x}, ${hcCoords.y})">
+      <circle r="22" fill="rgba(46, 204, 113, 0.2)" stroke="#2ECC71" stroke-width="2.5" stroke-dasharray="2 2"></circle>
+      <text y="5" font-size="14">🍏🧠</text>
+    </g>
+    <!-- Centroide No Saludable -->
+    <g class="graph-centroid junk" transform="translate(${jcCoords.x}, ${jcCoords.y})">
+      <circle r="22" fill="rgba(231, 76, 60, 0.2)" stroke="#E74C3C" stroke-width="2.5" stroke-dasharray="2 2"></circle>
+      <text y="5" font-size="14">🍩🧠</text>
+    </g>
+  `;
+  centroidsG.classList.remove('hidden');
+
   const testArea = document.getElementById('lab-test-area');
   testArea.classList.remove('hidden');
   
@@ -2048,8 +2213,8 @@ function completeTraining() {
   });
 
   setMascotExpression('jagui-lab-test', 'happy');
-  document.getElementById('test-bubble').innerHTML = "<strong>¡Fabuloso!</strong> Mi red neuronal aprendió de tus datos. ¡Presiona un alimento para ponerme a prueba!";
-  speakText("¡Fabuloso! Mi red neuronal aprendió de tus datos. ¡Presiona un alimento misterioso de prueba para ver qué aprendí!");
+  document.getElementById('test-bubble').innerHTML = "<strong>¡Fabuloso!</strong> Mi red neuronal aprendió los centroides de tus datos. ¡Presiona un alimento de prueba para ponerme a prueba!";
+  speakText("¡Fabuloso! Mi red neuronal aprendió los centroides de tus datos. ¡Presiona un alimento misterioso de prueba para ver qué aprendí!");
 
   appState.isMLTrained = true;
   checkAchievements();
@@ -2057,34 +2222,83 @@ function completeTraining() {
 }
 
 function testMLItem(itemId) {
-  const item = ML_TEST_ITEMS.find(i => i.id === itemId);
-  if (!item) return;
+  const f = FOOD_FEATURES[itemId];
+  if (!f) return;
 
   playAudioSynth('click');
   
   const links = document.querySelectorAll('.neural-links line');
-  const scanColor = item.type === 'healthy' ? '#00FFCC' : '#FF3366';
+  // Visual pulse on net links
   links.forEach(l => {
-    l.setAttribute('stroke', scanColor);
+    l.setAttribute('stroke', '#00FFFF');
     l.setAttribute('stroke-width', '4');
   });
 
   setMascotExpression('jagui-lab-test', 'thinking');
-  document.getElementById('test-bubble').innerText = "Analizando píxeles y patrones... 🤖🔎";
+  document.getElementById('test-bubble').innerText = "Calculando distancias euclidianas en mi plano cartesiano... 🤖🔎";
+
+  // Calcular coordenadas del punto de prueba en SVG píxeles
+  const testCoords = getGraphCoords(f.sugar, f.vitamins);
+  
+  // Calcular distancia Euclidiana
+  const dHealthy = Math.sqrt((f.sugar - appState.healthyCentroid.sugar)**2 + (f.vitamins - appState.healthyCentroid.vitamins)**2);
+  const dJunk = Math.sqrt((f.sugar - appState.junkCentroid.sugar)**2 + (f.vitamins - appState.junkCentroid.vitamins)**2);
+  
+  const predictedType = dHealthy < dJunk ? 'healthy' : 'junk';
+  
+  // Limpiar vectores de prueba anteriores
+  document.getElementById('graph-test-vectors').innerHTML = '';
+  
+  // Graficar punto de prueba
+  document.getElementById('graph-test-point').innerHTML = `
+    <g class="graph-dot" transform="translate(${testCoords.x}, ${testCoords.y})">
+      <circle r="16" fill="rgba(0, 255, 255, 0.25)" stroke="#00FFFF" stroke-width="2"></circle>
+      <text y="5" font-size="14">${f.emoji}</text>
+    </g>
+  `;
+
+  // Coordenadas de los centroides
+  const hcCoords = getGraphCoords(appState.healthyCentroid.sugar, appState.healthyCentroid.vitamins);
+  const jcCoords = getGraphCoords(appState.junkCentroid.sugar, appState.junkCentroid.vitamins);
 
   setTimeout(() => {
+    // Dibujar líneas y etiquetas de distancias
+    const colorH = predictedType === 'healthy' ? '#2ECC71' : '#888';
+    const widthH = predictedType === 'healthy' ? '3' : '1.5';
+    const colorJ = predictedType === 'junk' ? '#E74C3C' : '#888';
+    const widthJ = predictedType === 'junk' ? '3' : '1.5';
+
+    document.getElementById('graph-test-vectors').innerHTML = `
+      <line class="distance-line" x1="${testCoords.x}" y1="${testCoords.y}" x2="${hcCoords.x}" y2="${hcCoords.y}" stroke="${colorH}" stroke-width="${widthH}"></line>
+      <line class="distance-line" x1="${testCoords.x}" y1="${testCoords.y}" x2="${jcCoords.x}" y2="${jcCoords.y}" stroke="${colorJ}" stroke-width="${widthJ}"></line>
+      
+      <!-- Etiquetas flotantes -->
+      <text x="${(testCoords.x + hcCoords.x)/2}" y="${(testCoords.y + hcCoords.y)/2 - 5}" fill="${colorH}" font-size="10" font-weight="bold" text-anchor="middle">d=${dHealthy.toFixed(1)}</text>
+      <text x="${(testCoords.x + jcCoords.x)/2}" y="${(testCoords.y + jcCoords.y)/2 - 5}" fill="${colorJ}" font-size="10" font-weight="bold" text-anchor="middle">d=${dJunk.toFixed(1)}</text>
+    `;
+
     links.forEach((l, idx) => {
       l.setAttribute('stroke', idx % 2 === 0 ? '#00FFFF' : '#FF00FF');
       l.setAttribute('stroke-width', '2.5');
     });
 
-    playAudioSynth('correct');
+    playAudioSynth(predictedType === 'healthy' ? 'correct' : 'incorrect');
     setMascotExpression('jagui-lab-test', 'happy');
     
-    const explanation = `<strong>JagÜi dice:</strong> ${item.speech}`;
-    document.getElementById('test-bubble').innerHTML = explanation;
-    speakText(item.speech);
-  }, 1000);
+    let explanationSpeech = "";
+    let explanationHTML = "";
+    
+    if (predictedType === 'healthy') {
+      explanationSpeech = `¡Es Saludable! La distancia matemática al grupo Saludable es de ${dHealthy.toFixed(1)}, que es más chiquita que al grupo No Saludable de ${dJunk.toFixed(1)}. ¡Increíble!`;
+      explanationHTML = `¡Es <strong>Saludable 🍏</strong>!<br>Distancia a saludables: <strong>${dHealthy.toFixed(1)}</strong> (¡Más cerca!).<br>Distancia a no saludables: <strong>${dJunk.toFixed(1)}</strong>.`;
+    } else {
+      explanationSpeech = `¡Es No Saludable! La distancia matemática al grupo No Saludable es de ${dJunk.toFixed(1)}, que es más chiquita que al grupo Saludable de ${dHealthy.toFixed(1)}. ¡Clasificado con éxito!`;
+      explanationHTML = `¡Es <strong>No Saludable 🍩</strong>!<br>Distancia a no saludables: <strong>${dJunk.toFixed(1)}</strong> (¡Más cerca!).<br>Distancia a saludables: <strong>${dHealthy.toFixed(1)}</strong>.`;
+    }
+    
+    document.getElementById('test-bubble').innerHTML = explanationHTML;
+    speakText(explanationSpeech);
+  }, 1200);
 }
 
 function resetMLSandbox() {
