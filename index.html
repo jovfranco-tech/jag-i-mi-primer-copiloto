@@ -333,7 +333,10 @@
           
           <div class="lesson-progress-bar-container">
             <div class="lesson-progress-fill" id="lesson-progress-fill" style="width: 0%;"></div>
-            <div class="lesson-progress-jagui" id="lesson-progress-jagui" style="left: 0%;"><div class="jagui-walk-sprite mini-sprite"></div></div>
+            <div class="lesson-progress-jagui" id="lesson-progress-jagui" style="left: 0%;">
+              <div class="jagui-walk-sprite mini-sprite"></div>
+              <div id="mini-jagui-accessory" class="jagui-accessory-overlay mini-acc"></div>
+            </div>
           </div>
 
           <div class="lesson-lives">
@@ -555,6 +558,9 @@
                 <span class="edit-icon">✏️</span>
               </div>
               <p class="profile-rank" id="profile-rank-label">Explorador de Datos 🌟</p>
+              
+              <!-- Estado de Autenticación de Firebase -->
+              <div id="profile-auth-status" style="width: 100%; margin-top: 0.5rem;"></div>
             </div>
             
             <div class="profile-stats-grid">
@@ -580,6 +586,29 @@
             </div>
           </div>
           
+          <!-- PANEL DE CONFIGURACIONES SELVÁTICAS -->
+          <div class="settings-section glass" style="margin-top: 2rem;">
+            <h3 class="section-subtitle">⚙️ Panel de Control y Configuración</h3>
+            
+            <div class="settings-group">
+              <div class="setting-item">
+                <label for="music-volume-slider">🎵 Volumen de Música: <span id="val-music-volume">50%</span></label>
+                <input type="range" id="music-volume-slider" min="0" max="100" value="50" oninput="changeVolume('music', this.value)" class="volume-slider">
+              </div>
+              <div class="setting-item">
+                <label for="sfx-volume-slider">🔊 Volumen de Efectos: <span id="val-sfx-volume">50%</span></label>
+                <input type="range" id="sfx-volume-slider" min="0" max="100" value="50" oninput="changeVolume('sfx', this.value)" class="volume-slider">
+              </div>
+            </div>
+
+            <!-- BOTÓN DE INSTALACIÓN PWA PERSONALIZADO -->
+            <div class="pwa-install-container" id="pwa-install-container" style="display: none; margin-top: 1.5rem; text-align: center;">
+              <button class="btn-3d btn-primary" onclick="installPWA()" style="width: 100%; max-width: 320px; margin: 0 auto;">
+                <span>📱 ¡Instalar Jagüi en tu Dispositivo! 🚀</span>
+              </button>
+            </div>
+          </div>
+
           <div class="danger-zone">
             <button class="btn-3d btn-secondary btn-sm" onclick="confirmResetProgress()">
               ⚠️ Borrar Progreso y Reiniciar App

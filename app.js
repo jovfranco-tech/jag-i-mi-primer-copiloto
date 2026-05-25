@@ -1030,7 +1030,12 @@ let appState = {
 
   // Tienda IA
   inventory: [],
-  equippedAccessory: null
+  equippedAccessory: null,
+  
+  // Ajustes de volumen y racha de gamificación
+  musicVolume: 0.5,
+  sfxVolume: 0.5,
+  correctStreak: 0
 };
 
 // --- CONFIGURACIÓN DE FIREBASE (CLUB DE CIENTÍFICOS JAGÜI) ---
@@ -1058,19 +1063,23 @@ function initFirebase() {
       
       // Escuchar cambios de estado de autenticación
       auth.onAuthStateChanged(user => {
+        updateAuthProfileUI(user);
         if (user) {
           console.log("Usuario autenticado:", user.email);
           appState.username = user.displayName || "Científico/a";
           loadProfileFromFirebase(user.uid);
         } else {
           console.log("Modo Invitado activo.");
+          updateAuthProfileUI(null);
         }
       });
     } else {
       console.warn("Librerías de Firebase no detectadas. Degradando a almacenamiento local.");
+      updateAuthProfileUI(null);
     }
   } catch (e) {
     console.error("Fallo al conectar con Firebase:", e);
+    updateAuthProfileUI(null);
   }
 }
 
@@ -1127,8 +1136,63 @@ function closeAuthDialog(isGuest = false) {
   if (isGuest) {
     appState.username = "Invitado/a 🐆";
     document.getElementById('nav-username-display').innerText = "Invitado/a";
+    // Forzar render de modo Invitado
+    updateAuthProfileUI(null);
   }
 }
+
+window.updateAuthProfileUI = function(user) {
+  const statusContainer = document.getElementById('profile-auth-status');
+  if (!statusContainer) return;
+  
+  if (user) {
+    statusContainer.innerHTML = `
+      <div class="auth-status-card logged-in" style="background: rgba(0, 255, 255, 0.08); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--accent-green); margin-top: 1rem; text-align: center;">
+        <span style="font-size: 1.8rem; display: block; margin-bottom: 0.25rem;">🧑‍🔬</span>
+        <strong style="color: var(--accent-green); font-size: 1rem;">Club de Científicos Activo ☁️</strong>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0.25rem 0 0.8rem 0;">Conectado como: ${user.email}</p>
+        <button class="btn-3d btn-secondary btn-sm" onclick="logoutWithFirebase()" style="margin: 0 auto; width: auto; min-width: 140px;">
+          <span>Cerrar Sesión 🚪</span>
+        </button>
+      </div>
+    `;
+    // Actualizar nombre en el input de perfil
+    const input = document.getElementById('username-input');
+    if (input) input.value = user.displayName || appState.username;
+  } else {
+    statusContainer.innerHTML = `
+      <div class="auth-status-card guest" style="background: rgba(255, 144, 0, 0.08); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--primary-orange); margin-top: 1rem; text-align: center;">
+        <span style="font-size: 1.8rem; display: block; margin-bottom: 0.25rem;">⚠️</span>
+        <strong style="color: var(--primary-orange); font-size: 1rem;">Modo Invitado Activo</strong>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0.25rem 0 0.8rem 0;">Tus datos se guardan solo en este dispositivo. ¡Únete al club para no perder tu progreso!</p>
+        <button class="btn-3d btn-primary btn-sm" onclick="openAuthDialog()" style="margin: 0 auto; width: auto; min-width: 140px;">
+          <span>Conectar Cuenta 🔑</span>
+        </button>
+      </div>
+    `;
+  }
+};
+
+window.logoutWithFirebase = function() {
+  if (!auth) return;
+  playAudioSynth('click');
+  auth.signOut()
+    .then(() => {
+      console.log("Sesión cerrada con éxito.");
+      appState.username = "Invitado/a 🐆";
+      appState.xp = 0;
+      appState.completedLessons = [];
+      appState.inventory = [];
+      appState.equippedAccessory = null;
+      updateNavStats();
+      saveToLocalStorage();
+      applyAccessory();
+      // Forzar recarga a la pantalla de bienvenida
+      switchScreen('welcome-screen');
+      triggerConfetti(); // Celebración de despedida lúdica
+    })
+    .catch(err => console.warn("Error al cerrar sesión:", err));
+};
 
 function toggleAuthForm(form) {
   playAudioSynth('click');
@@ -1256,8 +1320,9 @@ function playBackgroundMusic() {
       osc.type = 'sine'; // Onda suave
       osc.frequency.setValueAtTime(melody[step], now);
       
-      // Volumen muy bajito para que sea música de fondo relajante
-      gain.gain.setValueAtTime(0.015, now);
+      // Volumen muy bajito de fondo escalado por la configuración analógica
+      const baseVol = 0.03 * appState.musicVolume;
+      gain.gain.setValueAtTime(baseVol, now);
       gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.32);
       
       osc.connect(gain);
@@ -1302,6 +1367,20 @@ function toggleMusic() {
     localStorage.setItem('jagui_music', 'on');
   }
 }
+
+window.changeVolume = function(type, val) {
+  const numVal = parseFloat(val) / 100;
+  if (type === 'music') {
+    appState.musicVolume = numVal;
+    const label = document.getElementById('val-music-volume');
+    if (label) label.innerText = val + "%";
+  } else if (type === 'sfx') {
+    appState.sfxVolume = numVal;
+    const label = document.getElementById('val-sfx-volume');
+    if (label) label.innerText = val + "%";
+  }
+  saveToLocalStorage();
+};
 
 // --- INTELIGENCIA ARTIFICIAL NATIVA (GEMINI API CHATBOT & DICTADO POR VOZ) ---
 let recognitionInstance = null;
@@ -1588,7 +1667,7 @@ function playAudioSynth(type) {
       osc.type = 'sine';
       osc.frequency.setValueAtTime(600, now);
       osc.frequency.exponentialRampToValueAtTime(150, now + 0.1);
-      gain.gain.setValueAtTime(0.15, now);
+      gain.gain.setValueAtTime(0.15 * appState.sfxVolume, now);
       gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
       osc.connect(gain);
       gain.connect(audioCtx.destination);
@@ -1603,7 +1682,7 @@ function playAudioSynth(type) {
         const gain = audioCtx.createGain();
         osc.type = 'triangle';
         osc.frequency.setValueAtTime(freq, now + idx * 0.08);
-        gain.gain.setValueAtTime(0.15, now + idx * 0.08);
+        gain.gain.setValueAtTime(0.15 * appState.sfxVolume, now + idx * 0.08);
         gain.gain.exponentialRampToValueAtTime(0.01, now + idx * 0.08 + 0.25);
         osc.connect(gain);
         gain.connect(audioCtx.destination);
@@ -1618,7 +1697,7 @@ function playAudioSynth(type) {
       osc.type = 'sawtooth';
       osc.frequency.setValueAtTime(220, now);
       osc.frequency.linearRampToValueAtTime(110, now + 0.3);
-      gain.gain.setValueAtTime(0.12, now);
+      gain.gain.setValueAtTime(0.12 * appState.sfxVolume, now);
       gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
       
       // Filtro para suavizar el sonido del diente de sierra
@@ -1641,7 +1720,7 @@ function playAudioSynth(type) {
         const gain = audioCtx.createGain();
         osc.type = 'sine';
         osc.frequency.setValueAtTime(freq, now + idx * 0.07);
-        gain.gain.setValueAtTime(0.15, now + idx * 0.07);
+        gain.gain.setValueAtTime(0.15 * appState.sfxVolume, now + idx * 0.07);
         gain.gain.exponentialRampToValueAtTime(0.01, now + idx * 0.07 + 0.35);
         osc.connect(gain);
         gain.connect(audioCtx.destination);
@@ -1839,10 +1918,18 @@ function applyAccessory() {
   const wOverlay = document.getElementById('welcome-jagui-accessory');
   const iOverlay = document.getElementById('instructor-jagui-accessory');
   const lOverlay = document.getElementById('lab-jagui-accessory');
+  const mOverlay = document.getElementById('mini-jagui-accessory');
   
-  if (wOverlay) wOverlay.innerText = emojiStr;
-  if (iOverlay) iOverlay.innerText = emojiStr;
-  if (lOverlay) lOverlay.innerText = emojiStr;
+  [wOverlay, iOverlay, lOverlay, mOverlay].forEach(el => {
+    if (el) {
+      el.innerText = emojiStr;
+      // Limpiar clases acc- previas
+      el.className = el.className.split(' ').filter(c => !c.startsWith('acc-')).join(' ');
+      if (equipped) {
+        el.classList.add(`acc-${equipped}`);
+      }
+    }
+  });
 }
 
 function renderStoreView() {
@@ -1926,7 +2013,9 @@ function saveToLocalStorage() {
     username: appState.username,
     achievements: appState.achievements,
     inventory: appState.inventory,
-    equippedAccessory: appState.equippedAccessory
+    equippedAccessory: appState.equippedAccessory,
+    musicVolume: appState.musicVolume,
+    sfxVolume: appState.sfxVolume
   }));
 }
 
@@ -1944,6 +2033,18 @@ function loadFromLocalStorage() {
       appState.achievements = parsed.achievements || JSON.parse(JSON.stringify(ACHIEVEMENTS_DATA));
       appState.inventory = parsed.inventory || [];
       appState.equippedAccessory = parsed.equippedAccessory || null;
+      appState.musicVolume = parsed.musicVolume !== undefined ? parsed.musicVolume : 0.5;
+      appState.sfxVolume = parsed.sfxVolume !== undefined ? parsed.sfxVolume : 0.5;
+      
+      // Actualizar visualmente los sliders en la interfaz
+      const mSlider = document.getElementById('music-volume-slider');
+      const sSlider = document.getElementById('sfx-volume-slider');
+      const mLabel = document.getElementById('val-music-volume');
+      const sLabel = document.getElementById('val-sfx-volume');
+      if (mSlider) mSlider.value = Math.round(appState.musicVolume * 100);
+      if (sSlider) sSlider.value = Math.round(appState.sfxVolume * 100);
+      if (mLabel) mLabel.innerText = Math.round(appState.musicVolume * 100) + "%";
+      if (sLabel) sLabel.innerText = Math.round(appState.sfxVolume * 100) + "%";
       
       document.getElementById('btn-resume-game').classList.remove('hidden');
       updateNavStats();
@@ -2198,6 +2299,14 @@ function setMascotExpression(mascotId, expression) {
   }
 }
 
+// Diccionario de Ciber-Alimentos Selváticos Neón en SVG para clasificación (10/10 Visual)
+const CIBER_FOOD_SVGS = {
+  "🍎": `<svg viewBox="0 0 100 100" class="ciber-food-svg" style="width: 50px; height: 50px; filter: drop-shadow(0 2px 8px rgba(57,255,20,0.5));"><defs><radialGradient id="appleGrad" cx="50%" cy="40%" r="50%"><stop offset="0%" stop-color="#39ff14"/><stop offset="100%" stop-color="#145a08"/></radialGradient></defs><circle cx="50" cy="55" r="35" fill="url(#appleGrad)"/><path d="M50 20 Q55 10 65 15" stroke="#39ff14" stroke-width="4" fill="none"/><path d="M50 55 L35 55 M50 55 L65 55 M50 40 L50 70" stroke="#00ffff" stroke-width="2" opacity="0.8"/><circle cx="50" cy="55" r="4" fill="#00ffff"/></svg>`,
+  "🍌": `<svg viewBox="0 0 100 100" class="ciber-food-svg" style="width: 50px; height: 50px; filter: drop-shadow(0 2px 8px rgba(255,255,0,0.5));"><defs><linearGradient id="bananaGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ffff00"/><stop offset="100%" stop-color="#d4af37"/></linearGradient></defs><path d="M20 70 Q 50 80 80 30 Q 60 50 20 70 Z" fill="url(#bananaGrad)"/><path d="M75 35 L80 30" stroke="#00ffff" stroke-width="3"/><path d="M40 65 L55 55 M30 70 L45 60" stroke="#00ffff" stroke-width="1.5" opacity="0.8"/><circle cx="45" cy="60" r="3" fill="#00ffff"/></svg>`,
+  "🍩": `<svg viewBox="0 0 100 100" class="ciber-food-svg" style="width: 50px; height: 50px; filter: drop-shadow(0 2px 8px rgba(255,0,127,0.5));"><defs><radialGradient id="donutGrad" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#ff007f"/><stop offset="100%" stop-color="#7a003c"/></radialGradient></defs><circle cx="50" cy="50" r="35" fill="#d2691e"/><circle cx="50" cy="50" r="30" fill="url(#donutGrad)"/><circle cx="50" cy="50" r="12" fill="#121929"/><circle cx="38" cy="38" r="3" fill="#00ffff"/><circle cx="62" cy="38" r="3" fill="#39ff14"/><circle cx="50" cy="25" r="2.5" fill="#ffff00"/><circle cx="35" cy="55" r="3" fill="#00ffff"/><circle cx="65" cy="55" r="2.5" fill="#39ff14"/></svg>`,
+  "🍕": `<svg viewBox="0 0 100 100" class="ciber-food-svg" style="width: 50px; height: 50px; filter: drop-shadow(0 2px 8px rgba(255,153,0,0.5));"><defs><linearGradient id="pizzaGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ff9900"/><stop offset="100%" stop-color="#ff3300"/></linearGradient></defs><path d="M50 15 L85 75 L15 75 Z" fill="url(#pizzaGrad)"/><path d="M15 75 Q 50 80 85 75 L85 80 Q 50 85 15 80 Z" fill="#d2691e"/><circle cx="50" cy="45" r="5" fill="#39ff14"/><circle cx="38" cy="60" r="4" fill="#00ffff"/><circle cx="62" cy="60" r="4" fill="#ff007f"/><path d="M50 45 L38 60 M50 45 L62 60" stroke="#00ffff" stroke-width="2" opacity="0.7"/></svg>`
+};
+
 function renderQuestion() {
   const lesson = LESSONS_DATA[appState.currentLessonId];
   const question = lesson.questions[appState.currentQuestionIndex];
@@ -2296,9 +2405,10 @@ function renderQuestion() {
           <div class="draggable-items-pool" id="drag-items-pool">
     `;
     question.items.forEach((item, idx) => {
+      const foodVisual = CIBER_FOOD_SVGS[item.emoji] || `<span>${item.emoji}</span>`;
       html += `
         <div class="draggable-item" id="drag-item-${item.id}" draggable="true" ondragstart="handleMinigameDragStart(event, '${item.id}')" style="touch-action: none;">
-          <span>${item.emoji}</span>
+          ${foodVisual}
         </div>
       `;
     });
@@ -3056,18 +3166,47 @@ function showQuizFeedback(isCorrect, feedbackText, question) {
   actionBtn.className = "btn-3d btn-secondary";
 
   if (isCorrect) {
-    playAudioSynth('correct');
-    spawnConfetti(); // Celebración de confetti en tiempo real al acertar
-    setMascotExpression('jagui-instructor', 'happy');
+    appState.correctStreak = (appState.correctStreak || 0) + 1;
     
-    banner.className = "quiz-feedback-banner correct";
-    icon.innerText = "🎉";
-    title.innerText = "¡Súper Correcto!";
-    desc.innerText = feedbackText;
-    
-    document.getElementById('instructor-bubble').innerHTML = `<strong>¡Woooow!</strong> ${feedbackText}`;
-    speakText(`¡Súper Correcto! ${feedbackText}`);
+    // Si logra una racha de 3 aciertos seguidos: MODO SÚPER CEREBRO 🧠⚡
+    if (appState.correctStreak === 3) {
+      playAudioSynth('victory');
+      spawnConfetti();
+      setTimeout(spawnConfetti, 250);
+      setTimeout(spawnConfetti, 500);
+      
+      setMascotExpression('jagui-instructor', 'happy');
+      
+      banner.className = "quiz-feedback-banner correct super-brain-active";
+      icon.innerText = "🧠✨";
+      title.innerText = "¡MODO SÚPER CEREBRO!";
+      
+      const superBrainText = "¡Racha de 3 aciertos! ¡Tu mente de Científico está brillando en modo Súper Cerebro! 🧠⚡ (+20 XP)";
+      desc.innerText = superBrainText;
+      
+      document.getElementById('instructor-bubble').innerHTML = `<strong>🧠 ¡Súper Cerebro Activado!</strong> ¡Racha de 3 aciertos seguidos!`;
+      
+      // Voz especial
+      speakText("¡Súper Cerebro! Racha de tres aciertos. Tu mente humana de Científico está brillando a súper velocidad. ¡Felicidades! 🧠✨");
+      
+      appState.xp += 20; // 10 base + 10 extra
+      updateNavStats();
+      saveToLocalStorage();
+    } else {
+      playAudioSynth('correct');
+      spawnConfetti(); // Celebración de confetti en tiempo real al acertar
+      setMascotExpression('jagui-instructor', 'happy');
+      
+      banner.className = "quiz-feedback-banner correct";
+      icon.innerText = "🎉";
+      title.innerText = "¡Súper Correcto!";
+      desc.innerText = feedbackText;
+      
+      document.getElementById('instructor-bubble').innerHTML = `<strong>¡Woooow!</strong> ${feedbackText}`;
+      speakText(`¡Súper Correcto! ${feedbackText}`);
+    }
   } else {
+    appState.correctStreak = 0; // Reiniciar racha al fallar
     playAudioSynth('incorrect');
     setMascotExpression('jagui-instructor', 'sad');
     
@@ -3626,3 +3765,40 @@ function resetMLSandbox() {
   playAudioSynth('click');
   initMLSandbox();
 }
+
+// --- INSTALACIÓN PWA PERSONALIZADA (10/10 COMERCIAL) ---
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', (e) => {
+  // Prevenir que Chrome muestre el mini-infobar nativo automáticamente
+  e.preventDefault();
+  // Guardar el evento para ser disparado más tarde
+  deferredPrompt = e;
+  // Mostrar el contenedor de instalación selvático neón en el perfil
+  const installContainer = document.getElementById('pwa-install-container');
+  if (installContainer) {
+    installContainer.style.display = 'block';
+  }
+  console.log("PWA beforeinstallprompt capturado con éxito! 📱⚡");
+});
+
+window.installPWA = function() {
+  if (deferredPrompt) {
+    playAudioSynth('click');
+    // Disparar el prompt de instalación nativo
+    deferredPrompt.prompt();
+    // Esperar la elección del usuario
+    deferredPrompt.userChoice.then((choiceResult) => {
+      if (choiceResult.outcome === 'accepted') {
+        console.log('El Científico/a aceptó instalar Jagüi PWA! 🎉');
+      } else {
+        console.log('El Científico/a rechazó la instalación de Jagüi PWA');
+      }
+      deferredPrompt = null;
+      // Ocultar el botón
+      const installContainer = document.getElementById('pwa-install-container');
+      if (installContainer) {
+        installContainer.style.display = 'none';
+      }
+    });
+  }
+};
