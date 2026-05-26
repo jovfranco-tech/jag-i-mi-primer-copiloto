@@ -48,6 +48,10 @@
           <svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
           <span>Charla IA</span>
         </button>
+        <button id="btn-nav-story" class="nav-btn" onclick="switchScreen('story-screen')">
+          <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+          <span>Cuentos IA</span>
+        </button>
         <button id="btn-music-toggle" class="nav-btn theme-toggle-btn" onclick="toggleMusic()">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
           <span id="music-toggle-text">Música: OFF</span>
@@ -74,6 +78,7 @@
       <section id="welcome-screen" class="screen active">
         <div class="welcome-container">
           <div class="welcome-visual">
+            <canvas id="magic-particles-canvas" class="magic-particles"></canvas>
             <div class="logo-container">
               <span class="sparkle s1">✨</span>
               <span class="sparkle s2">⭐</span>
@@ -675,6 +680,55 @@
 
           <div class="store-grid" id="store-items-container">
             <!-- Rellenado dinámicamente por JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- PANTALLA 8: CUENTOS IA (STORYTELLER) -->
+      <section id="story-screen" class="screen">
+        <div class="story-container">
+          <div class="screen-header">
+            <h2 class="section-title">📖 Cuentos de la Selva IA</h2>
+            <p class="section-subtitle">¡Elige un tema y Jagüi escribirá un cuento único usando su IA generativa!</p>
+          </div>
+
+          <div class="story-controls glass" style="margin-bottom: 2rem;">
+            <h3 style="margin-bottom: 1rem; color: var(--accent-cyan);">Elige el tema de tu cuento:</h3>
+            <div class="story-themes" style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem;">
+              <button class="btn-3d btn-secondary story-theme-btn" onclick="selectStoryTheme('El espacio y los robots', this)">
+                <span>🚀 Espacio</span>
+              </button>
+              <button class="btn-3d btn-secondary story-theme-btn" onclick="selectStoryTheme('La selva mágica de datos', this)">
+                <span>🌲 Selva</span>
+              </button>
+              <button class="btn-3d btn-secondary story-theme-btn" onclick="selectStoryTheme('El misterio de la computadora antigua', this)">
+                <span>🕵️ Misterio</span>
+              </button>
+              <button class="btn-3d btn-secondary story-theme-btn" onclick="selectStoryTheme('Una aventura de ciencia', this)">
+                <span>🧪 Ciencia</span>
+              </button>
+            </div>
+
+            <button class="btn-3d btn-primary" id="btn-generate-story" onclick="generateStory()">
+              <span>¡Escribir Cuento! ✨</span>
+            </button>
+          </div>
+
+          <div class="story-display glass" style="position: relative; min-height: 250px;">
+            <div id="story-mascot-container" style="position: absolute; top: -60px; right: 20px; width: 100px; height: 110px;">
+               <svg class="jagui-svg state-normal" viewBox="0 0 200 220" id="jagui-story">
+                  <use href="#jagui-welcome" />
+               </svg>
+            </div>
+            <h3 id="story-title-display" style="margin-bottom: 1rem; color: var(--primary-orange); padding-right: 120px; min-height: 30px;"></h3>
+            <div id="story-text-display" style="font-size: 1.1rem; line-height: 1.6; color: var(--text-light); white-space: pre-wrap;">
+               ¡Selecciona un tema y presiona "Escribir Cuento" para que comience la magia!
+            </div>
+            <div class="story-actions" style="margin-top: 1.5rem; display: none;" id="story-actions-box">
+               <button class="btn-3d btn-secondary" onclick="readGeneratedStory()">
+                 <span>🔊 Escuchar Cuento</span>
+               </button>
+            </div>
           </div>
         </div>
       </section>
