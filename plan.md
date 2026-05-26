@@ -1,0 +1,5 @@
+1. **Analyze accessibility issues:** Look at the forms in `index.html`, particularly the login and register forms, and observe that `<label>` tags are missing `for` attributes, which reduces accessibility for screen readers and decreases the click target size.
+2. **Implement proper form labels:** Add `for` attributes to the labels matching the `id` of their corresponding inputs in both the Login and Register forms (`auth-email-login`, `auth-pass-login`, `auth-name-register`, `auth-email-register`, `auth-pass-register`).
+3. **Add ARIA label to close button:** The close button in the lesson screen (`btn-close-lesson`) is an icon-only button ("✕"). Add `aria-label="Cerrar lección"` to improve accessibility for screen readers.
+4. **Pre-commit testing:** Check format/lint based on repo configuration. Since this repo appears to be simple HTML/JS without complex build steps, I will make sure the HTML is valid and no errors are introduced. I will also run `pre_commit_instructions`.
+5. **Submit PR:** Commit the changes with a PR describing the accessibility improvements made to the forms and icon buttons.
