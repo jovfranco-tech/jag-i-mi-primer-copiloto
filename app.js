@@ -1975,6 +1975,14 @@ function switchScreen(screenId) {
       const btn = document.getElementById('btn-nav-store');
       if (btn) btn.classList.add('active');
       renderStoreView();
+    } else if (screenId === 'story-screen') {
+      const btn = document.getElementById('btn-nav-story');
+      if (btn) btn.classList.add('active');
+      // Reset story screen state when opening
+      document.getElementById('story-title-display').innerText = "";
+      document.getElementById('story-text-display').innerText = "¡Selecciona un tema y presiona \"Escribir Cuento\" para que comience la magia!";
+      document.getElementById('story-actions-box').style.display = 'none';
+      setMascotExpression('jagui-story', 'normal');
     }
     
     document.querySelector('.main-content').scrollTop = 0;
@@ -2203,6 +2211,9 @@ document.addEventListener('DOMContentLoaded', () => {
   initFirebase();
   loadFromLocalStorage();
   
+  // Iniciar partículas de bienvenida
+  initMagicParticles();
+
   // Sincronizar el username si ya está autenticado en Firebase
   if (auth && auth.currentUser) {
     appState.username = auth.currentUser.displayName || "Científico/a";
@@ -3096,8 +3107,8 @@ function reinforcementAction(actionType) {
   }
 }
 
-function spawnSparkle(x, y, char) {
-  const board = document.getElementById('runway-board');
+function spawnSparkle(x, y, char, parentId = 'runway-board') {
+  const board = document.getElementById(parentId);
   if (!board) return;
   
   const sparkle = document.createElement('div');
@@ -3811,10 +3822,16 @@ function handleDrop(ev, binType) {
       appState.healthyBin.push(item);
       document.getElementById('count-healthy').innerText = `${appState.healthyBin.length} ejemplos`;
       document.getElementById('bin-healthy-items').innerHTML += `<div class="bin-item-bubble">${item.emoji}</div>`;
+
+      // Spawneamos una estrellita mágica en el bin relative box
+      spawnSparkle(ev.offsetX || 100, ev.currentTarget.offsetHeight - (ev.offsetY || 100), "✨", 'bin-healthy');
     } else {
       appState.junkBin.push(item);
       document.getElementById('count-junk').innerText = `${appState.junkBin.length} ejemplos`;
       document.getElementById('bin-junk-items').innerHTML += `<div class="bin-item-bubble">${item.emoji}</div>`;
+
+      // Spawneamos una estrellita mágica en el bin relative box
+      spawnSparkle(ev.offsetX || 100, ev.currentTarget.offsetHeight - (ev.offsetY || 100), "✨", 'bin-junk');
     }
     
     // Dibujar punto dinámico instantáneo en el gráfico SVG de coordenadas
@@ -4090,3 +4107,230 @@ window.installPWA = function() {
     });
   }
 };
+
+// --- MAGIC PARTICLES ENGINE (WELCOME SCREEN) ---
+function initMagicParticles() {
+  const canvas = document.getElementById('magic-particles-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let particles = [];
+  let animationId = null;
+
+  function resizeCanvas() {
+    // Parent container width/height
+    const container = canvas.parentElement;
+    if (container) {
+      canvas.width = container.offsetWidth;
+      canvas.height = container.offsetHeight;
+    }
+  }
+
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
+
+  class MagicParticle {
+    constructor() {
+      this.reset();
+    }
+
+    reset() {
+      this.x = Math.random() * canvas.width;
+      this.y = Math.random() * canvas.height;
+      this.size = Math.random() * 3 + 1;
+      this.speedX = Math.random() * 1 - 0.5;
+      this.speedY = Math.random() * 1 - 0.5;
+      this.life = Math.random() * 100 + 50;
+      this.opacity = 0;
+      this.maxOpacity = Math.random() * 0.5 + 0.2;
+      this.color = `hsl(${Math.random() * 60 + 160}, 100%, 70%)`; // Cyan to blue tones
+    }
+
+    update() {
+      this.x += this.speedX;
+      this.y += this.speedY;
+      this.life--;
+
+      if (this.life > 50) {
+        this.opacity += 0.01;
+      } else {
+        this.opacity -= 0.01;
+      }
+
+      if (this.opacity < 0) this.opacity = 0;
+      if (this.opacity > this.maxOpacity) this.opacity = this.maxOpacity;
+
+      if (this.life <= 0 || this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) {
+        this.reset();
+        this.opacity = 0; // restart invisible
+      }
+    }
+
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fillStyle = this.color;
+      ctx.globalAlpha = this.opacity;
+      ctx.fill();
+    }
+  }
+
+  for (let i = 0; i < 50; i++) {
+    particles.push(new MagicParticle());
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      p.update();
+      p.draw();
+    });
+    animationId = requestAnimationFrame(animate);
+  }
+
+  // Only animate if welcome screen is active
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      if (mutation.target.classList.contains('active')) {
+        resizeCanvas();
+        if (!animationId) animate();
+      } else {
+        if (animationId) {
+          cancelAnimationFrame(animationId);
+          animationId = null;
+        }
+      }
+    });
+  });
+
+  const welcomeScreen = document.getElementById('welcome-screen');
+  if (welcomeScreen) {
+      observer.observe(welcomeScreen, { attributes: true, attributeFilter: ['class'] });
+      if (welcomeScreen.classList.contains('active')) {
+          animate();
+      }
+  }
+}
+
+// --- CUENTOS IA (STORYTELLER) ENGINE ---
+let selectedStoryTheme = null;
+let currentGeneratedStory = "";
+
+function selectStoryTheme(theme, btnElement) {
+  playAudioSynth('click');
+  selectedStoryTheme = theme;
+
+  // Update UI selection
+  const btns = document.querySelectorAll('.story-theme-btn');
+  btns.forEach(btn => {
+    btn.classList.remove('btn-equipped');
+    btn.classList.add('btn-secondary');
+  });
+
+  btnElement.classList.remove('btn-secondary');
+  btnElement.classList.add('btn-equipped');
+}
+
+function generateStory() {
+  if (!selectedStoryTheme) {
+    speakText("¡Raaaawr! Por favor, elige un tema primero para que pueda escribir el cuento.");
+    return;
+  }
+
+  playAudioSynth('click');
+  setMascotExpression('jagui-story', 'thinking');
+
+  const textDisplay = document.getElementById('story-text-display');
+  const titleDisplay = document.getElementById('story-title-display');
+  const actionBox = document.getElementById('story-actions-box');
+  const btnGen = document.getElementById('btn-generate-story');
+
+  titleDisplay.innerText = "Pensando... 🧠✨";
+  textDisplay.innerText = "Jagüi está conectando sus redes neuronales para crear una historia única...";
+  actionBox.style.display = 'none';
+  btnGen.disabled = true;
+
+  const apiKey = localStorage.getItem('gemini_api_key');
+
+  if (!apiKey) {
+      // Usar simulador local si no hay API key para evitar errores y costos de API
+      setTimeout(() => {
+        let title = "El Cuento de la Selva";
+        let story = "¡Hola! Para que pueda escribir cuentos usando mi verdadera Inteligencia Artificial Generativa, necesitas colocar mi API Key secreta en la configuración de la Charla IA. ¡Raaaawr!";
+        if (selectedStoryTheme.includes('espacio')) {
+             title = "Jagüi en el Espacio";
+             story = "¡Un día, Jagüi construyó un cohete con partes de computadora vieja! Voló tan alto que llegó a una galaxia donde los robots jugaban con las estrellas. ¡Raaaawr! Para escuchar historias verdaderas, necesitas colocar mi API Key secreta en la configuración de la Charla IA.";
+        }
+
+        currentGeneratedStory = story;
+        titleDisplay.innerText = title;
+        textDisplay.innerText = story;
+        actionBox.style.display = 'flex';
+        btnGen.disabled = false;
+
+        setMascotExpression('jagui-story', 'happy');
+        playAudioSynth('correct');
+        triggerConfetti();
+      }, 2000);
+      return;
+  }
+
+  const prompt = `Escribe un cuento corto (máximo 4 párrafos cortos) para niños de 8 años sobre el tema: "${selectedStoryTheme}". El protagonista debe ser Jagüi, un jaguar tecnológico que enseña Inteligencia Artificial. Usa un tono muy alegre, lúdico e incluye emojis. Devuelve el resultado en formato JSON estricto con las claves "titulo" y "cuento". Ejemplo: {"titulo": "Un título divertido", "cuento": "Había una vez..."}. NO uses markdown (\`\`\`) alrededor del JSON.`;
+
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+  const payload = {
+    contents: [{ parts: [{ text: prompt }] }]
+  };
+
+  fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+  .then(res => res.json())
+  .then(data => {
+    btnGen.disabled = false;
+    let title = "El Cuento Misterioso";
+    let story = "Había una vez un jaguar que se quedó sin internet... ¡Pero pronto volverá!";
+
+    try {
+      if (data.candidates && data.candidates[0].content && data.candidates[0].content.parts) {
+        const rawText = data.candidates[0].content.parts[0].text;
+        const cleanText = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
+        const parsed = JSON.parse(cleanText);
+        title = parsed.titulo || title;
+        story = parsed.cuento || story;
+      }
+    } catch (e) {
+      console.warn("Fallo al parsear cuento de Gemini.", e);
+      // Fallback
+      if (data.candidates && data.candidates[0].content && data.candidates[0].content.parts) {
+         story = data.candidates[0].content.parts[0].text;
+      }
+    }
+
+    currentGeneratedStory = story;
+    titleDisplay.innerText = title;
+    textDisplay.innerText = story;
+    actionBox.style.display = 'flex';
+
+    setMascotExpression('jagui-story', 'happy');
+    playAudioSynth('correct');
+    triggerConfetti();
+  })
+  .catch(err => {
+    console.error("Story generation error:", err);
+    btnGen.disabled = false;
+    titleDisplay.innerText = "¡Ups!";
+    textDisplay.innerText = "Parece que hay problemas de conexión en la selva. No pude generar el cuento. ¿Tienes internet?";
+    setMascotExpression('jagui-story', 'sad');
+    playAudioSynth('incorrect');
+  });
+}
+
+function readGeneratedStory() {
+  if (currentGeneratedStory) {
+    playAudioSynth('click');
+    setMascotExpression('jagui-story', 'happy');
+    speakText(currentGeneratedStory);
+  }
+}
