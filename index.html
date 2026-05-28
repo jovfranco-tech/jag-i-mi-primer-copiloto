@@ -264,7 +264,7 @@
                 <input type="checkbox" id="voice-synthesis-toggle" checked>
                 <span class="slider round"></span>
               </label>
-              <span class="toggle-label">Activar voz de JagÜi 🗣️</span>
+              <label for="voice-synthesis-toggle" class="toggle-label">Activar voz de JagÜi 🗣️</label>
             </div>
           </div>
         </div>
@@ -301,7 +301,7 @@
         <div class="gamification-panel">
           <!-- Cofre Selvático -->
           <div class="jungle-chest-card glass" id="jungle-chest-card">
-            <div class="chest-visual" id="chest-visual-btn" onclick="openJungleChest()">🎁</div>
+            <div class="chest-visual" id="chest-visual-btn" onclick="openJungleChest()" role="button" tabindex="0" aria-label="Abrir cofre de la selva" onkeydown="if(event.key==='Enter'||event.key===' ')openJungleChest()">🎁</div>
             <div class="chest-info">
               <h4>Cofre de la Selva 🎁</h4>
               <p id="chest-status-text">¡Consigue XP para abrir el cofre!</p>
@@ -364,7 +364,7 @@
       <section id="lesson-screen" class="screen">
         <!-- BARRA SUPERIOR DE LA LECCIÓN -->
         <div class="lesson-header">
-          <button class="btn-close-lesson" onclick="confirmExitLesson()">✕</button>
+          <button class="btn-close-lesson" onclick="confirmExitLesson()" aria-label="Cerrar lección" title="Cerrar lección">✕</button>
           
           <div class="lesson-progress-bar-container">
             <div class="lesson-progress-fill" id="lesson-progress-fill" style="width: 0%;"></div>
@@ -592,8 +592,8 @@
             <div class="profile-avatar-large"><img src="assets/jagui_mascot_hero.png" alt="Jagüi" class="profile-avatar-img"></div>
             <div class="profile-identity">
               <div class="username-edit-container">
-                <input type="text" id="username-input" class="username-input" value="Científico de IA" onchange="saveUsername()">
-                <span class="edit-icon">✏️</span>
+                <input type="text" id="username-input" class="username-input" value="Científico de IA" onchange="saveUsername()" aria-label="Tu nombre de Científico">
+                <span class="edit-icon" aria-hidden="true">✏️</span>
               </div>
               <p class="profile-rank" id="profile-rank-label">Explorador de Datos 🌟</p>
               
@@ -701,8 +701,8 @@
 
             <!-- Panel de Entrada de Texto -->
             <div class="chat-input-bar">
-              <button class="btn-3d btn-secondary btn-chat-mic" id="btn-chat-mic" onclick="toggleVoiceRecognition()" title="Hablar con Jagüi" style="padding: 0.8rem 1rem;">
-                <span>🎙️</span>
+              <button class="btn-3d btn-secondary btn-chat-mic" id="btn-chat-mic" onclick="toggleVoiceRecognition()" aria-label="Hablar con Jagüi por voz" title="Hablar con Jagüi" style="padding: 0.8rem 1rem;">
+                <span aria-hidden="true">🎙️</span>
               </button>
               <input type="text" id="chat-user-input" class="chat-input" placeholder="Pregúntale algo a Jagüi o pulsa el micro..." onkeydown="handleChatKeydown(event)">
               <button class="btn-3d btn-primary btn-chat-send" onclick="sendChatMessage()">
