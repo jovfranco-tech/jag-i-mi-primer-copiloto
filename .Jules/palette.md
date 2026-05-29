@@ -1,0 +1,3 @@
+## 2024-05-24 - Interactive Divs & Icon-only Buttons Require Explicit A11y Support
+**Learning:** In highly customized, gamified UIs like this app, many interactive elements are either built as icon-only `<button>`s without text labels (e.g., `#btn-nav-*`, `.btn-close-lesson`) or custom `<div>`s masquerading as buttons (e.g., `.nav-user-preview`, `.chest-visual`). These elements lack native screen-reader context and keyboard support.
+**Action:** Always verify that icon-only buttons have descriptive `aria-label`s. For custom interactive `<div>` elements relying on `onclick`, immediately add `role="button"`, `tabindex="0"`, `aria-label`, and an `onkeydown` handler for the Space and Enter keys to ensure keyboard accessibility.
