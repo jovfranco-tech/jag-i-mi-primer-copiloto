@@ -364,7 +364,7 @@
       <section id="lesson-screen" class="screen">
         <!-- BARRA SUPERIOR DE LA LECCIÓN -->
         <div class="lesson-header">
-          <button class="btn-close-lesson" onclick="confirmExitLesson()">✕</button>
+          <button class="btn-close-lesson" aria-label="Cerrar lección" title="Cerrar lección" onclick="confirmExitLesson()"><span aria-hidden="true">✕</span></button>
           
           <div class="lesson-progress-bar-container">
             <div class="lesson-progress-fill" id="lesson-progress-fill" style="width: 0%;"></div>
@@ -592,8 +592,8 @@
             <div class="profile-avatar-large"><img src="assets/jagui_mascot_hero.png" alt="Jagüi" class="profile-avatar-img"></div>
             <div class="profile-identity">
               <div class="username-edit-container">
-                <input type="text" id="username-input" class="username-input" value="Científico de IA" onchange="saveUsername()">
-                <span class="edit-icon">✏️</span>
+                <input type="text" id="username-input" class="username-input" aria-label="Nombre de Científico" title="Editar nombre" value="Científico de IA" onchange="saveUsername()">
+                <span class="edit-icon" aria-hidden="true">✏️</span>
               </div>
               <p class="profile-rank" id="profile-rank-label">Explorador de Datos 🌟</p>
               
@@ -701,10 +701,10 @@
 
             <!-- Panel de Entrada de Texto -->
             <div class="chat-input-bar">
-              <button class="btn-3d btn-secondary btn-chat-mic" id="btn-chat-mic" onclick="toggleVoiceRecognition()" title="Hablar con Jagüi" style="padding: 0.8rem 1rem;">
-                <span>🎙️</span>
+              <button class="btn-3d btn-secondary btn-chat-mic" id="btn-chat-mic" aria-label="Usar micrófono" onclick="toggleVoiceRecognition()" title="Hablar con Jagüi" style="padding: 0.8rem 1rem;">
+                <span aria-hidden="true">🎙️</span>
               </button>
-              <input type="text" id="chat-user-input" class="chat-input" placeholder="Pregúntale algo a Jagüi o pulsa el micro..." onkeydown="handleChatKeydown(event)">
+              <input type="text" id="chat-user-input" class="chat-input" aria-label="Mensaje para Jagüi" placeholder="Pregúntale algo a Jagüi o pulsa el micro..." onkeydown="handleChatKeydown(event)">
               <button class="btn-3d btn-primary btn-chat-send" onclick="sendChatMessage()">
                 <span>Enviar 🚀</span>
               </button>
