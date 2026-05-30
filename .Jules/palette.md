@@ -1,0 +1,3 @@
+## 2024-03-20 - [ARIA Labels for Icon-Only Buttons]
+**Learning:** In "Jagüi: Mi Primer Copiloto", I observed that icon-only interactive elements (like `btn-close-lesson` or `btn-chat-mic`) did not have descriptive `aria-label`s. Further, wrapping the raw text or emojis inside them with `aria-hidden="true"` is crucial to prevent screen readers from reading raw emojis improperly alongside the label.
+**Action:** Always add `aria-label` to strictly icon-only buttons. Wrap the visual emojis or raw characters inside them in `<span aria-hidden="true">` to avoid screen reader regressions.
